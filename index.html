@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<title>Email Signature Generator 1.0</title>
+
+<script src="js/require.js"></script>
+
+<script type="text/javascript">
+    requirejs.config({
+    baseUrl: 'js',
+    paths: {
+        jquery: 'jquery-3.2.1.min',
+        jqueryui: 'jquery-ui.min',
+        select2: 'select2.min',
+        config: 'config'
+    }
+});
+</script>
+
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/grid.css">
+<link rel="stylesheet" href="css/bands.css">
+
+</head>
+<body class="" data-version="4.1">
+            <div id="maincontent" class="wdn-main">
+                
+                <div class="wdn-band wdn-light-neutral-band" id="signIn">
+                    <div class="wdn-inner-wrapper">
+                        <h1 class="clear-top">Signature Generator</h1>
+                        <div class="wdn-grid-set-halves" id="instructions">
+                            <div class="wdn-col">
+                            <ol>
+                                <li id="enterUsername">Enter your My.UNL username to start. <br> <div class="wdn-tooltip hang-right" id="username-tooltip" aria-live="polite"><div><span class="wdn-icon wdn-icon-attention">Sorry this username does not exist</span></div><input id="username" type="text"></div><button id="start" class="wdn-button wdn-button-brand">Start</button></li>
+                                <li>Edit your information in the boxes on the right. Make sure mailto: is added before all email addresses and http:// is added before all web addresses. Reorder the boxes by clicking and dragging them up and down. Click anywhere on the page after making changes to update the signature preview. </li>
+                                <li>Click the "copy your signature" button and your signature will be automatically copied. <br><div class="wdn-tooltip hang-right copied-tooltip" aria-live="polite"><div><span class="wdn-icon wdn-icon-attention">Your signature has been copied!</span></div><button class="wdn-button wdn-button-brand copySignature">Copy Your Signature</button></div></li>
+                                <li>Copy and paste the highlighted signature into the signature preferences in your mail client (i.e. Outlook, Mac Mail, etc.). Be mindful that many mail clients will reformat text pasted into them. Make sure your client is set to "Keep Source Formatting."</li>
+                            </ol>
+                            </div>
+                            <div class="wdn-col">
+                                <figure class="wdn-frame">
+                                    <img src="http://ucomm.unl.edu/images/email-signature/keepSource.jpg" alt="keep source example" />
+                                    <figcaption>"Keep Source Formatting" example, Outlook for Mac.</figcaption>
+                                </figure>
+                                <frame><img src="" alt=""></frame>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wdn-band hidden" id="sigBuilder">
+                    <div class="wdn-inner-wrapper">
+                        <div id="controls" class="noselect wdn-light-neutral-band">
+                        <span><em>Drag to reorder.</em></span>
+                            <div id="fields"></div>
+                            <button id="newRow" class="wdn-button wdn-button-brand">Add a New Row +</button><br><br>
+                            <!-- <input type="checkbox" name="usePicture" id="usePicture" checked="true">Use Picture<br> -->
+                            <div class="wdn-tooltip hang-right copied-tooltip" aria-live="polite"><div><span class="wdn-icon wdn-icon-attention">Your signature has been copied!</span></div>
+                                <button class="wdn-button wdn-button-brand copySignature">
+                                    Copy Your Signature
+                                </button>
+                            </div>
+                        </div>
+                        <div id="signature" style="background-color:transparent;">
+                            <div style="background-color:transparent; display:block;">&nbsp;</div>
+                            <div style="background-color:transparent; display:block;">&nbsp;</div>
+                            <table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;">
+                                <tbody>
+                                    <tr>
+                                        <td valign="top" style="border:none;border-top:solid #D00000 2px;padding:18px">
+                                            <img src="" alt="" id="sig-logo" style="display: block;">
+                                        </td>
+                                        <td id="contactInfo" valign="top" style="border:none;padding:15px 18px 18px 0;border-top:solid #D00000 2px;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="wdn-band wdn-light-neutral-band wdn-text-band">
+                    <div class="wdn-inner-wrapper wdn-inner-padding-small wdn-center">
+                        <p><small><em>This application is developed and maintained by <a href="http://iim.unl.edu/">Internet and Interactive Media</a>, a partnership of University Communication and Information Technology Services.</em></small></p>
+                        <p><small>Please submit issues to <a href="mailto:mysupport@unl.edu">mysupport@unl.edu</a></small></p>
+                    </div>
+                </div>
+                
+                <script type="text/javascript">
+
+                require(["config", "jquery", "jqueryui", "select2"], function(config, $) {
+
+                    var signatureHTML = "";
+
+                    var telephoneReg = /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/
+
+                    var dataFields = Object.keys(config.defaultData)
+
+
+
+
+                    if (detectIE()) { 
+                        $("#signIn > .wdn-inner-wrapper").append('<div class="wdn_notice alert"><div class="close"><a href="#">Close this notice</a></div><div class="message"><p class="title">Incompatible Browser!</p><p>This web browser is known to produce incorrect signature renderings. Please use Chrome, Firefox or Safari.</p></div></div>');
+
+                        $("#instructions").hide();
+
+                    }else{
+
+                        if (mobilecheck()) {
+
+                            $("#signIn > .wdn-inner-wrapper").append('<div class="wdn_notice alert"><div class="close"><a href="#">Close this notice</a></div><div class="message"><p class="title">Incompatible Browser!</p><p>The Email Signature Generator is not intended to be with on mobile devices. Please return on a desktop computer.</p></div></div>');
+
+                            $("#instructions").hide();
+
+                        }else{
+
+                            if(config.logo !== undefined){
+                                $("#sig-logo").attr("src", config.logo)
+                                $("#sig-logo").attr("alt", config.logoAlt)
+                            }else{
+                                $("#sig-logo").parent().remove();
+                            }
+
+                            if(config.API !== undefined){
+                                $("#enterUsername").show();
+                            }else{
+                                init(config.defaultData);
+                            }
+
+
+                            $(window).on("copy", function(e){
+                                e.originalEvent.preventDefault();
+                                e.originalEvent.clipboardData.setData('text/plain', "Please paste into a format that supports HTML");
+                                e.originalEvent.clipboardData.setData('text/html', signatureHTML);
+                            });                
+
+                            $("#start").on("click", function(){
+                                getUser();
+                            });
+
+                            $("#username").on("keydown", function(e){
+                                if(e.keyCode == 13){
+                                    getUser();
+                                }
+                            });
+
+                            function getUser(){
+                                $("#username").val($("#username").val().replace("@unl.edu",""));
+                                $.get( config.API.replace("{{user}}",$("#username").val()), function( data ) {
+                                    init(data);
+                                }).fail(function(){
+                                    noUser();
+                                });
+                            };
+
+                            function init(userData){
+
+                                $("#fields").html("");
+
+                                $("#sigBuilder").removeClass("hidden");
+                                $("#username-tooltip > div").css("display","none");
+                                $('html, body').animate({
+                                    scrollTop: $("#sigBuilder").offset().top - 100
+                                }, 2000);
+
+
+                                if(config.dataTransforms !== undefined){
+                                    userData = config.dataTransforms(userData);    
+                                }
+
+                                var fields = [];
+
+                                for (var i = 0; i < dataFields.length; i++) {
+                                    if(userData[dataFields[i]] === undefined){
+                                        if(config.defaultData[dataFields[i]] !== null){
+                                            fields.push(config.defaultData[dataFields[i]]);
+                                        }
+                                    }else{
+                                        fields.push(userData[dataFields[i]])    
+                                    }
+                                    
+                                }
+
+
+                                for (var i = 0; i < fields.length; i++) {
+                                    if(fields[i]){
+                                        if(fields[i][0].match(telephoneReg)){
+                                            addSelect(fields[i],"tel:"+fields[i][0].replace(" ","").replace(" ",""))
+                                        }else{
+                                            addSelect(fields[i])
+                                        }
+                                    }
+                                }
+
+                                $("#newRow").on("click", function(){
+                                    addSelect([""]);
+                                });
+
+                                $("#fields").bind("DOMSubtreeModified", updateFields);
+                                $("#fields").sortable();
+
+                                $("select").select2({
+                                    tags: true,
+                                    multiple: false
+                                })
+
+                                function SelectText(element) {
+                                    var doc = document,
+                                        text = doc.getElementById(element),
+                                        range, selection;
+                                    if (doc.body.createTextRange) {
+                                        range = document.body.createTextRange();
+                                        range.moveToElementText(text);
+                                        range.select();
+                                    } else if (window.getSelection) {
+                                        selection = window.getSelection();
+                                        range = document.createRange();
+                                        range.selectNodeContents(text);
+                                        selection.removeAllRanges();
+                                        selection.addRange(range);
+                                    }
+                                }
+
+                                $(".copySignature").on("click", function(){
+                                    var copied = true;
+                                    try {
+                                        var copied = document.execCommand("copy");
+                                        if(!copied){
+                                            if(confirm("The copy button is not supported in your browser. You Signature has been selected. Please manually copy with cmd/ctrl+C. ")){
+                                                setTimeout(function(){SelectText("signature");},100);
+                                            }
+                                        }
+                                    } catch(e) {
+                                        console.log(e)
+                                        copied = false;
+                                    }
+                                    if(copied){
+                                        $(".copied-tooltip > div").css("display","block");
+
+                                        setTimeout(function(){
+                                            $(".copied-tooltip > div").css("display","none");
+                                        }, 5000);
+                                    }
+                                });
+
+                                updateFields();
+
+                                function updateFields(){
+                                    signatureHTML = '<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;"><tbody><tr><td valign="top" style="border:none;border-top:solid #D00000 2px;padding:18px"><img src="http://ucomm.unl.edu/images/email-signature/Nebraska_N_RGB_email_small.png" class="logo" style="display: block;"></td><td id="contactInfo" valign="top" style="border:none;padding:15px 18px 18px 0;border-top:solid #D00000 2px;">';
+                                    $("#contactInfo").html("")
+                                    $("#fields .sortable").each(function(i){
+                                        var info = $(this).find(".name").val();
+                                        var link = $(this).find(".link").val();
+                                        if(link != undefined && link != ""){
+                                            info = "<a href='"+link+"'>"+info+"</a>";
+                                        }
+
+                                        if(info){
+                                            switch(i){
+                                                case 0:
+                                                    info = "<strong>"+info+"</strong>";
+                                                    $("#contactInfo").append('<p style="margin:0px 2px 2px 2px;font-family: Helvetica, Arial;color: #454545;font-size:16px;line-height: 18px;">'+info+'</p>');
+                                                    signatureHTML += '<p style="margin:0px 2px 2px 2px;font-family: Helvetica, Arial;color: #454545;font-size:16px;line-height: 18px;">'+info+'</p>';
+                                                    break;
+                                                case 1:
+                                                    $("#contactInfo").append('<p style="font-size:12px;margin:2px;font-style:italic;font-family: Georgia;color: #454545;line-height: 14px;">'+info+'</p>');    
+                                                    signatureHTML += '<p style="font-size:12px;margin:2px;font-style:italic;font-family: Georgia;color: #454545;line-height: 14px;">'+info+'</p>';
+                                                    break;
+                                                default:
+                                                    $("#contactInfo").append('<p style="font-size:10px;margin:2px;font-family: Helvetica, Arial;color: #454545;line-height: 14px;">'+info+'</p>');
+                                                    signatureHTML += '<p style="font-size:10px;margin:2px;font-family: Helvetica, Arial;color: #454545;line-height: 14px;">'+info+'</p>';
+                                                    break;
+                                            }
+
+                                            
+                                            }
+                                    });
+
+                                    signatureHTML += '</td></tr></tbody></table>';
+
+                                }
+
+                                function addSelect(fieldSet, link){
+                                    link = typeof link !== 'undefined' ? link : "";
+                                    var $select = $("<input>").attr("type","text").addClass("name").val(fieldSet[0]).on("change", updateFields);
+                                    var $sortable = $("<div>").addClass("sortable");
+                                    $sortable.append($select)
+                                    $sortable.append(
+                                        $("<button>").addClass("wdn-button wdn-button-brand").on("click", function(){
+                                            $(this).parent().remove();
+                                        }).html("x")
+                                    );
+                                    $sortable.append($("<input type='text' placeholder='URL'>").val(link).addClass("link").on("change", updateFields));
+                                    $("#fields").append($sortable);
+                                };
+                            }
+
+                            function noUser(){
+                                $("#username-tooltip > div").css("display","block");
+                            }
+                        }
+                    }  
+
+
+
+                    function detectIE() {
+                      var ua = window.navigator.userAgent;
+
+                      // Test values; Uncomment to check result …
+
+                      // IE 10
+                      // ua = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)';
+                      
+                      // IE 11
+                      // ua = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
+                      
+                      // Edge 12 (Spartan)
+                      // ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0';
+                      
+                      // Edge 13
+                      // ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
+
+                      var msie = ua.indexOf('MSIE ');
+                      if (msie > 0) {
+                        // IE 10 or older => return version number
+                        return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+                      }
+
+                      var trident = ua.indexOf('Trident/');
+                      if (trident > 0) {
+                        // IE 11 => return version number
+                        var rv = ua.indexOf('rv:');
+                        return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+                      }
+
+                      var edge = ua.indexOf('Edge/');
+                      if (edge > 0) {
+                        // Edge (IE 12+) => return version number
+                        return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+                      }
+
+                      // other browser
+                      return false;
+                    }
+
+                    function mobilecheck() {
+                        var check = false;
+                        (function(a) {
+                            if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true; })(navigator.userAgent || navigator.vendor || window.opera);
+                        return check;
+                    };
+
+                });
+                </script>
+
+            
+            </div>
+
+</body>
+</html>
