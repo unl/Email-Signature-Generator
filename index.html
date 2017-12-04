@@ -89,50 +89,39 @@
                 <script type="text/javascript">
 
                 require(["config", "jquery", "jqueryui", "select2"], function(config, $) {
-
                     var signatureHTML = "";
-
                     var telephoneReg = /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/
-
                     var dataFields = Object.keys(config.defaultData)
-
-
-
 
                     if (detectIE()) { 
                         $("#signIn > .wdn-inner-wrapper").append('<div class="wdn_notice alert"><div class="close"><a href="#">Close this notice</a></div><div class="message"><p class="title">Incompatible Browser!</p><p>This web browser is known to produce incorrect signature renderings. Please use Chrome, Firefox or Safari.</p></div></div>');
 
                         $("#instructions").hide();
-
                     }else{
-
                         if (mobilecheck()) {
-
                             $("#signIn > .wdn-inner-wrapper").append('<div class="wdn_notice alert"><div class="close"><a href="#">Close this notice</a></div><div class="message"><p class="title">Incompatible Browser!</p><p>The Email Signature Generator is not intended to be with on mobile devices. Please return on a desktop computer.</p></div></div>');
-
                             $("#instructions").hide();
-
+                            
                         }else{
-
-                            if(config.logo !== undefined){
-                                $("#sig-logo").attr("src", config.logo)
-                                $("#sig-logo").attr("alt", config.logoAlt)
+                            
+                            if(config.institutions[0].logo !== undefined){
+                                $("#sig-logo").attr("src", config.institutions[0].logo);
+                                $("#sig-logo").attr("alt", config.institutions[0].name + ' logo');
                             }else{
                                 $("#sig-logo").parent().remove();
                             }
-
-                            if(config.API !== undefined){
+                            
+                            if(config.institutions[0].api !== undefined){
                                 $("#enterUsername").show();
                             }else{
                                 init(config.defaultData);
                             }
-
-
+                            
                             $(window).on("copy", function(e){
                                 e.originalEvent.preventDefault();
                                 e.originalEvent.clipboardData.setData('text/plain', "Please paste into a format that supports HTML");
                                 e.originalEvent.clipboardData.setData('text/html', signatureHTML);
-                            });                
+                            });
 
                             $("#start").on("click", function(){
                                 getUser();
@@ -144,16 +133,16 @@
                                 }
                             });
 
-                            function getUser(){
+                            function getUser() {
                                 $("#username").val($("#username").val().replace("@unl.edu",""));
-                                $.get( config.API.replace("{{user}}",$("#username").val()), function( data ) {
+                                $.get( config.institutions[0].api.replace("{{user}}",$("#username").val()), function( data ) {
                                     init(data);
                                 }).fail(function(){
                                     noUser();
                                 });
-                            };
+                            }
 
-                            function init(userData){
+                            function init(userData) {
 
                                 $("#fields").html("");
 
@@ -164,8 +153,8 @@
                                 }, 2000);
 
 
-                                if(config.dataTransforms !== undefined){
-                                    userData = config.dataTransforms(userData);    
+                                if(config.institutions[0].dataTransforms !== undefined){
+                                    userData = config.institutions[0].dataTransforms(userData);
                                 }
 
                                 var fields = [];
@@ -178,9 +167,7 @@
                                     }else{
                                         fields.push(userData[dataFields[i]])    
                                     }
-                                    
                                 }
-
 
                                 for (var i = 0; i < fields.length; i++) {
                                     if(fields[i]){
@@ -192,7 +179,7 @@
                                     }
                                 }
 
-                                $("#newRow").on("click", function(){
+                                $("#newRow").on("click", function() {
                                     addSelect([""]);
                                 });
 
@@ -202,7 +189,7 @@
                                 $("select").select2({
                                     tags: true,
                                     multiple: false
-                                })
+                                });
 
                                 function SelectText(element) {
                                     var doc = document,
