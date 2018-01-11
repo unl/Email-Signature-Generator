@@ -12,7 +12,6 @@
     paths: {
         jquery: 'jquery-3.2.1.min',
         jqueryui: 'jquery-ui.min',
-        select2: 'select2.min',
         config: 'config'
     }
 });
@@ -52,7 +51,11 @@
                 <div class="wdn-band hidden" id="sigBuilder">
                     <div class="wdn-inner-wrapper">
                         <div id="controls" class="noselect wdn-light-neutral-band">
-                        <span><em>Drag to reorder.</em></span>
+                            <label class="logo-select">
+                                Choose your logo
+                                <select id="logo-select"></select>
+                            </label>
+                            <span><em>Drag to reorder.</em></span>
                             <div id="fields"></div>
                             <button id="newRow" class="wdn-button wdn-button-brand">Add a New Row +</button><br><br>
                             <!-- <input type="checkbox" name="usePicture" id="usePicture" checked="true">Use Picture<br> -->
@@ -76,6 +79,7 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div id="sigTest"></div>
                     </div>
                 </div>
                 
@@ -88,10 +92,11 @@
                 
                 <script type="text/javascript">
 
-                require(["config", "jquery", "jqueryui", "select2"], function(config, $) {
+                require(["config", "jquery", "jqueryui"], function(config, $) {
                     var signatureHTML = "";
-                    var telephoneReg = /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/
-                    var dataFields = Object.keys(config.defaultData)
+                    var telephoneReg = /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/;
+                    var dataFields = Object.keys(config.defaultData);
+                    var logoIndex = 0;
 
                     if (detectIE()) { 
                         $("#signIn > .wdn-inner-wrapper").append('<div class="wdn_notice alert"><div class="close"><a href="#">Close this notice</a></div><div class="message"><p class="title">Incompatible Browser!</p><p>This web browser is known to produce incorrect signature renderings. Please use Chrome, Firefox or Safari.</p></div></div>');
@@ -103,14 +108,6 @@
                             $("#instructions").hide();
                             
                         }else{
-                            
-                            if(config.institutions[0].logo !== undefined){
-                                $("#sig-logo").attr("src", config.institutions[0].logo);
-                                $("#sig-logo").attr("alt", config.institutions[0].name + ' logo');
-                            }else{
-                                $("#sig-logo").parent().remove();
-                            }
-                            
                             if(config.institutions[0].api !== undefined){
                                 $("#enterUsername").show();
                             }else{
@@ -168,6 +165,20 @@
                                         fields.push(userData[dataFields[i]])    
                                     }
                                 }
+                                
+                                var $logos = $('#logo-select');
+                                $logos.html('');
+                                for (var i = 0; i < config.institutions[0].logos.length; i++) {
+                                    var $option = $('<option>', {
+                                        value: i
+                                    }).text(config.institutions[0].logos[i].name);
+                                    $logos.append($option);
+                                }
+                                
+                                $logos.on('change', function() {
+                                    logoIndex = $(this).find(":selected").attr('value');
+                                    updateFields();
+                                });
 
                                 for (var i = 0; i < fields.length; i++) {
                                     if(fields[i]){
@@ -185,12 +196,7 @@
 
                                 $("#fields").bind("DOMSubtreeModified", updateFields);
                                 $("#fields").sortable();
-
-                                $("select").select2({
-                                    tags: true,
-                                    multiple: false
-                                });
-
+                                
                                 function SelectText(element) {
                                     var doc = document,
                                         text = doc.getElementById(element),
@@ -218,7 +224,6 @@
                                             }
                                         }
                                     } catch(e) {
-                                        console.log(e)
                                         copied = false;
                                     }
                                     if(copied){
@@ -233,12 +238,13 @@
                                 updateFields();
 
                                 function updateFields(){
-                                    signatureHTML = '<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;"><tbody><tr><td valign="top" style="border:none;border-top:solid #D00000 2px;padding:18px"><img src="http://ucomm.unl.edu/images/email-signature/Nebraska_N_RGB_email_small.png" class="logo" style="display: block;"></td><td id="contactInfo" valign="top" style="border:none;padding:15px 18px 18px 0;border-top:solid #D00000 2px;">';
-                                    $("#contactInfo").html("")
+                                    console.log(logoIndex);
+                                    signatureHTML = '<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;"><tbody><tr><td valign="top" style="border:none;border-top:solid '+ config.institutions[0].logos[logoIndex].color +' 2px;padding:18px"><img src="'+config.institutions[0].logos[logoIndex].logo+'" class="logo" style="display: block;"></td><td id="contactInfo" valign="top" style="border:none;padding:15px 18px 18px 0;border-top:solid '+ config.institutions[0].logos[logoIndex].color +' 2px;">';
+                                    $("#contactInfo").html("");
                                     $("#fields .sortable").each(function(i){
                                         var info = $(this).find(".name").val();
                                         var link = $(this).find(".link").val();
-                                        if(link != undefined && link != ""){
+                                        if(link !== undefined && link !== ""){
                                             info = "<a href='"+link+"'>"+info+"</a>";
                                         }
 
@@ -246,25 +252,22 @@
                                             switch(i){
                                                 case 0:
                                                     info = "<strong>"+info+"</strong>";
-                                                    $("#contactInfo").append('<p style="margin:0px 2px 2px 2px;font-family: Helvetica, Arial;color: #454545;font-size:16px;line-height: 18px;">'+info+'</p>');
                                                     signatureHTML += '<p style="margin:0px 2px 2px 2px;font-family: Helvetica, Arial;color: #454545;font-size:16px;line-height: 18px;">'+info+'</p>';
                                                     break;
                                                 case 1:
-                                                    $("#contactInfo").append('<p style="font-size:12px;margin:2px;font-style:italic;font-family: Georgia;color: #454545;line-height: 14px;">'+info+'</p>');    
                                                     signatureHTML += '<p style="font-size:12px;margin:2px;font-style:italic;font-family: Georgia;color: #454545;line-height: 14px;">'+info+'</p>';
                                                     break;
                                                 default:
-                                                    $("#contactInfo").append('<p style="font-size:10px;margin:2px;font-family: Helvetica, Arial;color: #454545;line-height: 14px;">'+info+'</p>');
                                                     signatureHTML += '<p style="font-size:10px;margin:2px;font-family: Helvetica, Arial;color: #454545;line-height: 14px;">'+info+'</p>';
                                                     break;
                                             }
-
-                                            
-                                            }
+                                        }
                                     });
 
                                     signatureHTML += '</td></tr></tbody></table>';
-
+                                    console.log(signatureHTML);
+                                    
+                                    $('#signature').html(signatureHTML);
                                 }
 
                                 function addSelect(fieldSet, link){

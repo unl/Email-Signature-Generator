@@ -271,3 +271,16 @@ button {
     text-transform: uppercase;
     margin: 1em 0 0 0;
 }
+
+label.logo-select {
+    display:block;
+}
+
+.logo-select select {
+    display: block;
+    width: 100%;
+}
+
+.logo-select {
+    margin-bottom: 1em;
+}
