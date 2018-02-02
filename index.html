@@ -38,11 +38,10 @@
                             </ol>
                             </div>
                             <div class="wdn-col">
-                                <figure class="wdn-frame">
+                                <figure class="wdn-frame" hidden>
                                     <img src="http://ucomm.unl.edu/images/email-signature/keepSource.jpg" alt="keep source example" />
                                     <figcaption>"Keep Source Formatting" example, Outlook for Mac.</figcaption>
                                 </figure>
-                                <frame><img src="" alt=""></frame>
                             </div>
                         </div>
                     </div>
@@ -146,7 +145,7 @@
                                 $("#sigBuilder").removeClass("hidden");
                                 $("#username-tooltip > div").css("display","none");
                                 $('html, body').animate({
-                                    scrollTop: $("#sigBuilder").offset().top - 100
+                                    //scrollTop: $("#sigBuilder").offset().top - 100
                                 }, 2000);
 
 
@@ -239,7 +238,7 @@
 
                                 function updateFields(){
                                     console.log(logoIndex);
-                                    signatureHTML = '<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;"><tbody><tr><td valign="top" style="border:none;border-top:solid '+ config.institutions[0].logos[logoIndex].color +' 2px;padding:18px"><img src="'+config.institutions[0].logos[logoIndex].logo+'" class="logo" style="display: block;"></td><td id="contactInfo" valign="top" style="border:none;padding:15px 18px 18px 0;border-top:solid '+ config.institutions[0].logos[logoIndex].color +' 2px;">';
+                                    signatureHTML = '<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;"><tbody><tr><td valign="top" style="border:none;border-top:solid '+ config.institutions[0].logos[logoIndex].color +' 2px;padding:18px"><img src="'+config.institutions[0].logos[logoIndex].logo+'" class="logo" style="display: block;"></td></tr><tr><td id="contactInfo" valign="top" style="border:none;padding:0px 15px">';
                                     $("#contactInfo").html("");
                                     $("#fields .sortable").each(function(i){
                                         var info = $(this).find(".name").val();
