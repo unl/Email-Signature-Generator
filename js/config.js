@@ -7,25 +7,32 @@ define({
 				if(data.unlHRPrimaryDepartment){
 					data.unlHRPrimaryDepartment[0] = data.unlHRPrimaryDepartment[0].replace("Office of University Communications","Office of University Communication");
 				}
+				console.log(data);
 				return data
 			},
             logos: [
                 {
                     name: 'UNL',
-					alt: 'University of Nebraska &ndash; Lincoln',
-					color: '#D00000',
+										alt: 'University of Nebraska &ndash; Lincoln',
+										color: '#D00000',
                     logo: 'https://ucomm.unl.edu/images/email-signature/Nebraska_N_RGB_small_on_white.gif'
                 },
+								{
+									name: 'GRIT-GLORY',
+									alt: 'In Our GRIT Our GLORY',
+									color: '#D00000',
+									logo: 'https://ucomm.unl.edu/images/email-signature/Nebrasla_N_GritGlory_Stacked_RGB.gif'
+								},
                 {
                     name: 'NFS',
-					alt: 'Nebraska Forest Service',
-					color: '#2b5135',
+										alt: 'Nebraska Forest Service',
+										color: '#2b5135',
                     logo: 'https://ucomm.unl.edu/images/email-signature/nfs.gif'
                 },
                 {
                     name: '4H',
-					'alt': '4H',
-					color: '#D00000',
+										alt: '4H',
+										color: '#D00000',
                     logo: 'https://ucomm.unl.edu/images/email-signature/4h.gif'
                 }
             ]
@@ -35,7 +42,7 @@ define({
 	defaultData: { // (required) Data to be used if API does not return a field or if no API is provided. 
 		// use "fieldName: null" if a field should be omitted if not provided by the API. Otherwise the field is treated as fallback content. 
 		// Object keys are used to determine which fields should be pulled from the API. 
-		cn:["Herbie W. Husker"],
+		displayName:["Herbie W. Husker"],
 		title:["Employee Title"],
 		organizationName: ["University of Nebraska&ndash;Lincoln"],
 		unlHRPrimaryDepartment:["Department Name"],
