@@ -9,32 +9,38 @@ define({
 				}
 				return data
 			},
-            logos: [
-                {
-                    name: 'UNL',
-		    alt: 'University of Nebraska &ndash; Lincoln',
-		    color: '#D00000',
-                    logo: 'https://ucomm.unl.edu/images/email-signature/Nebraska_N_RGB_small_on_white.gif'
-                },
-		{
-		    name: 'GRIT-GLORY',
-		    alt: 'In Our GRIT Our GLORY',
-		    color: '#D00000',
-		    logo: 'https://ucomm.unl.edu/images/email-signature/Nebrasla_N_GritGlory_Stacked_RGB.gif'
-		},
-                {
-                    name: 'NFS',
-		    alt: 'Nebraska Forest Service',
-		    color: '#2b5135',
-                    logo: 'https://ucomm.unl.edu/images/email-signature/nfs.gif'
-                },
-                {
-                    name: '4H',
-		    alt: '4H',
-		    color: '#D00000',
-                    logo: 'https://ucomm.unl.edu/images/email-signature/4h.gif'
-                }
-            ]
+			logos: [
+				{
+					name: 'N-(UNL Icon)',
+					alt: 'University of Nebraska &ndash; Lincoln',
+					color: '#D00000',
+					logo: 'https://ucomm.unl.edu/images/email-signature/Nebraska_N_RGB_small_on_white.gif'
+				},
+				{
+					name: 'N-150',
+					alt: 'N-150',
+					color: '#D00000',
+					logo: 'https://ucomm.unl.edu/images/email-signature/N150.gif'
+				},
+				{
+					name: 'N-Grit/Glory',
+					alt: 'In Our GRIT Our GLORY',
+					color: '#D00000',
+					logo: 'https://ucomm.unl.edu/images/email-signature/Nebrasla_N_GritGlory_Stacked_RGB.gif'
+				},
+				{
+					name: 'NFS',
+					alt: 'Nebraska Forest Service',
+					color: '#2b5135',
+					logo: 'https://ucomm.unl.edu/images/email-signature/nfs.gif'
+				},
+				{
+					name: '4H',
+					alt: '4H',
+					color: '#D00000',
+					logo: 'https://ucomm.unl.edu/images/email-signature/4h.gif'
+				}
+			]
 		}
 	],
 	
