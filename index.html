@@ -53,7 +53,10 @@
                         <div id="controls" class="noselect wdn-light-neutral-band">
                             <label class="logo-select">
                                 Choose your logo
-                                <select id="logo-select"></select>
+                                <select id="logo-select">
+                                    <optgroup id="university-logo-options" label='University'></optgroup>
+                                    <optgroup id="affiliates-logo-options" label='Affiliates'></optgroup>
+                                </select>
                             </label>
                             <span><em>Drag to reorder.</em></span>
                             <div id="fields"></div>
@@ -165,17 +168,25 @@
                                         fields.push(userData[dataFields[i]])    
                                     }
                                 }
-                                
-                                var $logos = $('#logo-select');
-                                $logos.html('');
+
+                                var $logo_select = $('#logo-select');
+                                var $university_logo_options = $('#university-logo-options');
+                                var $affiliates_logo_options = $('#affiliates-logo-options');
+
+                                $university_logo_options.html('');
+                                $affiliates_logo_options.html('');
                                 for (var i = 0; i < config.institutions[0].logos.length; i++) {
                                     var $option = $('<option>', {
                                         value: i
                                     }).text(config.institutions[0].logos[i].name);
-                                    $logos.append($option);
+                                    if (config.institutions[0].logos[i].optgroup == 'university'){
+                                      $university_logo_options.append($option);
+                                    } else {
+                                      $affiliates_logo_options.append($option);
+                                    }
                                 }
-                                
-                                $logos.on('change', function() {
+
+                                $logo_select.on('change', function() {
                                     logoIndex = $(this).find(":selected").attr('value');
                                     updateFields();
                                 });
@@ -238,7 +249,6 @@
                                 updateFields();
 
                                 function updateFields(){
-                                    console.log(logoIndex);
                                     signatureHTML = '<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;"><tbody><tr><td valign="top" style="border:none;border-top:solid '+ config.institutions[0].logos[logoIndex].color +' 2px;padding:18px"><img src="'+config.institutions[0].logos[logoIndex].logo+'" class="logo" style="display: block;"></td><td id="contactInfo" valign="top" style="border:none;padding:15px 18px 18px 0;border-top:solid '+ config.institutions[0].logos[logoIndex].color +' 2px;">';
                                     $("#contactInfo").html("");
                                     $("#fields .sortable").each(function(i){
@@ -265,7 +275,6 @@
                                     });
 
                                     signatureHTML += '</td></tr></tbody></table>';
-                                    console.log(signatureHTML);
                                     
                                     $('#signature').html(signatureHTML);
                                 }
