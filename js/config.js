@@ -14,31 +14,43 @@ define({
 					name: 'N-(UNL Icon)',
 					alt: 'University of Nebraska &ndash; Lincoln',
 					color: '#D00000',
-					logo: 'https://ucomm.unl.edu/images/email-signature/Nebraska_N_RGB_small_on_white.gif'
+					logo: 'https://ucomm.unl.edu/images/email-signature/Nebraska_N_RGB_small_on_white.gif',
+          optgroup: 'university'
 				},
 				{
 					name: 'N-150',
 					alt: 'N-150',
 					color: '#D00000',
-					logo: 'https://ucomm.unl.edu/images/email-signature/N150.gif'
+					logo: 'https://ucomm.unl.edu/images/email-signature/N150.gif',
+          optgroup: 'university'
 				},
 				{
 					name: 'N-Grit/Glory',
 					alt: 'In Our GRIT Our GLORY',
 					color: '#D00000',
-					logo: 'https://ucomm.unl.edu/images/email-signature/Nebrasla_N_GritGlory_Stacked_RGB.gif'
+					logo: 'https://ucomm.unl.edu/images/email-signature/Nebrasla_N_GritGlory_Stacked_RGB.gif',
+          optgroup: 'university'
 				},
-				{
-					name: 'NFS',
-					alt: 'Nebraska Forest Service',
-					color: '#2b5135',
-					logo: 'https://ucomm.unl.edu/images/email-signature/nfs.gif'
-				},
+        {
+          name: 'N-Museum',
+          alt: 'University of Nebraska State Museum',
+          color: '#2b5135',
+          logo: 'https://ucomm.unl.edu/images/email-signature/unsm.gif',
+          optgroup: 'affiliates'
+        },
+        {
+          name: 'NFS',
+          alt: 'Nebraska Forest Service',
+          color: '#D00000',
+          logo: 'https://ucomm.unl.edu/images/email-signature/nfs.gif',
+          optgroup: 'affiliates'
+        },
 				{
 					name: '4H',
 					alt: '4H',
 					color: '#D00000',
-					logo: 'https://ucomm.unl.edu/images/email-signature/4h.gif'
+					logo: 'https://ucomm.unl.edu/images/email-signature/4h.gif',
+          optgroup: 'affiliates'
 				}
 			]
 		}
