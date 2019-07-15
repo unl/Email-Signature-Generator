@@ -30,6 +30,13 @@ define({
 					logo: 'https://ucomm.unl.edu/images/email-signature/Nebrasla_N_GritGlory_Stacked_RGB.gif',
 					optgroup: 'university'
 				},
+        {
+          name: 'N-Engineering110',
+          alt: 'University of Nebraska &ndash Engineering 110',
+          color: '#2b5135',
+          logo: 'https://ucomm.unl.edu/images/email-signature/engineering110.gif',
+          optgroup: 'affiliates'
+        },
 				{
 					name: 'N-Museum',
 					alt: 'University of Nebraska State Museum',
