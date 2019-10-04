@@ -5,6 +5,7 @@ define({
 			dataTransforms: function(data){ // (optional) this function is called just before the data is used to generate the signature. You can use it to manipulate data. Here is an example removing the 's' from 'Communications'. You could potentially use it to shim an API that doesn't return data in Arrays.
 				if(data.unlHRPrimaryDepartment){
 					data.unlHRPrimaryDepartment[0] = data.unlHRPrimaryDepartment[0].replace("Office of University Communications","Office of University Communication");
+          data.unlHRPrimaryDepartment[0] = data.unlHRPrimaryDepartment[0].replace("Hixson-Lied Fine & Performing Arts","College of Fine and Performing Arts");
 				}
 				return data
 			},
