@@ -18,13 +18,6 @@ define({
           optgroup: 'university'
         },
         {
-          name: 'N-150',
-          alt: 'N-150',
-          color: '#D00000',
-          logo: 'https://ucomm.unl.edu/images/email-signature/N150.gif',
-          optgroup: 'university'
-        },
-        {
           name: 'N-Grit/Glory',
           alt: 'In Our GRIT Our GLORY',
           color: '#D00000',
