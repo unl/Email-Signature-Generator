@@ -25,6 +25,20 @@ define({
           optgroup: 'university'
         },
         {
+          name: 'N-Grit/Glory with Cornhusker Commitment',
+          alt: 'In Our GRIT Our GLORY',
+          color: '#D00000',
+          logo: 'https://ucomm.unl.edu/images/email-signature/N-CC-Sig-Hor.gif',
+          optgroup: 'university'
+        },
+        {
+          name: 'N-Grit/Glory with Cornhusker Commitment (2)',
+          alt: 'In Our GRIT Our GLORY',
+          color: '#D00000',
+          logo: 'https://ucomm.unl.edu/images/email-signature/N-CC-Sig-Hor-2.gif',
+          optgroup: 'university'
+        },
+        {
           name: 'N-Engineering110',
           alt: 'University of Nebraska &ndash Engineering 110',
           color: '#2b5135',
