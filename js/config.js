@@ -32,10 +32,10 @@ define({
           optgroup: 'university'
         },
         {
-          name: 'N-Engineering110',
-          alt: 'University of Nebraska &ndash Engineering 110',
-          color: '#2b5135',
-          logo: 'https://ucomm.unl.edu/images/email-signature/engineering110.gif',
+          name: 'N-Grit/Glory - Campus Recreation',
+          alt: 'University of Nebraska &ndash Campus Recreation',
+          color: '#D00000',
+          logo: 'https://ucomm.unl.edu/images/email-signature/REC-100-Sig-Hor-3.gif',
           optgroup: 'affiliates'
         },
         {
