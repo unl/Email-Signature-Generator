@@ -67,6 +67,7 @@ define({
     // use "fieldName: null" if a field should be omitted if not provided by the API. Otherwise the field is treated as fallback content.
     // Object keys are used to determine which fields should be pulled from the API.
     displayName:["Herbie W. Husker"],
+    pronouns: ["Pronouns: List your pronouns or delete row"],
     title:["Employee Title"],
     organizationName: ["University of Nebraska&ndash;Lincoln"],
     unlHRPrimaryDepartment:["Department Name"],
