@@ -32,10 +32,10 @@ define({
           optgroup: 'university'
         },
         {
-          name: 'N-Grit/Glory - Campus Recreation',
-          alt: 'University of Nebraska &ndash Campus Recreation',
+          name: 'N-Alumni',
+          alt: 'Nebraska Alumni Association',
           color: '#D00000',
-          logo: 'https://ucomm.unl.edu/images/email-signature/REC-100-Sig-Hor-3.gif',
+          logo: 'https://ucomm.unl.edu/images/email-signature/N_AlumniAssociation_Stacked_RGB.gif',
           optgroup: 'affiliates'
         },
         {
