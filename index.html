@@ -249,7 +249,7 @@
                                 updateFields();
 
                                 function updateFields(){
-                                    signatureHTML = '<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;"><tbody><tr><td valign="top" style="border:none;border-top:solid '+ config.institutions[0].logos[logoIndex].color +' 2px;padding:18px"><img src="'+config.institutions[0].logos[logoIndex].logo+'" class="logo" style="display: block;"></td><td id="contactInfo" valign="top" style="border:none;padding:15px 18px 18px 0;border-top:solid '+ config.institutions[0].logos[logoIndex].color +' 2px;">';
+                                    signatureHTML = '<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;"><tbody><tr><td valign="top" style="border:none;border-top:solid '+ config.institutions[0].logos[logoIndex].color +' 2px;padding:18px"><img src="'+config.institutions[0].logos[logoIndex].logo+'" class="logo" alt="'+config.institutions[0].logos[logoIndex].alt+'" style="display: block;"></td><td id="contactInfo" valign="top" style="border:none;padding:15px 18px 18px 0;border-top:solid '+ config.institutions[0].logos[logoIndex].color +' 2px;">';
                                     $("#contactInfo").html("");
                                     $("#fields .sortable").each(function(i){
                                         var info = $(this).find(".name").val();
