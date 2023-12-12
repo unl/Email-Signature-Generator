@@ -1,359 +1,805 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<style>
+    /* CONFIG FOR SIGNATURE GENERATOR */
+    /* Color Config */
+    :root {
+        --signature-bg-light-gray: var(--bg-light-gray);
+        --signature-bg-lighter-gray: var(--bg-lighter-gray);
+        --signature-b-light-gray: var(--b-light-gray);
 
-<title>Email Signature Generator 1.0</title>
+        --signature-preview-background: var(--badge);
+        --signature-preview-border: var(--b-fieldset);
 
-<script src="js/require.js"></script>
+        --signature-sortable-border: var(--darkest-gray);
+        --signature-sortable-current-border: var(--bg-brand-alpha);
 
-<script type="text/javascript">
-    requirejs.config({
-    baseUrl: 'js',
-    paths: {
-        jquery: 'jquery-3.2.1.min',
-        jqueryui: 'jquery-ui.min',
-        config: 'config'
+        --signature-popup-message-error: var(--bg-brand-alpha);
+        --signature-popup-message-success: var(--bg-brand-zeta);
     }
-});
-</script>
 
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/grid.css">
-<link rel="stylesheet" href="css/bands.css">
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --signature-bg-light-gray: var(--bg-light-gray);
+            --signature-bg-lighter-gray: var(--bg-lighter-gray);
+            --signature-b-light-gray: var(--b-light-gray);
 
-</head>
-<body class="" data-version="4.1">
-            <div id="maincontent" class="wdn-main">
-                
-                <div class="wdn-band wdn-light-neutral-band" id="signIn">
-                    <div class="wdn-inner-wrapper">
-                        <h1 class="clear-top">Signature Generator</h1>
-                        <div class="wdn-grid-set-halves" id="instructions">
-                            <div class="wdn-col">
-                            <ol>
-                                <li id="enterUsername">Enter your My.UNL username to start. <br> <div class="wdn-tooltip hang-right" id="username-tooltip" aria-live="polite"><div><span class="wdn-icon wdn-icon-attention">Sorry this username does not exist</span></div><input id="username" type="text"></div><button id="start" class="wdn-button wdn-button-brand">Start</button></li>
-                                <li>Edit your information in the boxes on the right. Make sure mailto: is added before all email addresses and http:// is added before all web addresses. Reorder the boxes by clicking and dragging them up and down. Click anywhere on the page after making changes to update the signature preview. </li>
-                                <li>Click the "copy your signature" button and your signature will be automatically copied. <br><div class="wdn-tooltip hang-right copied-tooltip" aria-live="polite"><div><span class="wdn-icon wdn-icon-attention">Your signature has been copied!</span></div><button class="wdn-button wdn-button-brand copySignature">Copy Your Signature</button></div></li>
-                                <li>Copy and paste the highlighted signature into the signature preferences in your mail client (i.e. Outlook, Mac Mail, etc.). Be mindful that many mail clients will reformat text pasted into them. Make sure your client is set to "Keep Source Formatting."</li>
-                            </ol>
-                            </div>
-                            <div class="wdn-col">
-                                <figure class="wdn-frame">
-                                    <img src="http://ucomm.unl.edu/images/email-signature/keepSource.jpg" alt="keep source example" />
-                                    <figcaption>"Keep Source Formatting" example, Outlook for Mac.</figcaption>
-                                </figure>
-                                <frame><img src="" alt=""></frame>
-                            </div>
-                        </div>
-                    </div>
+            --signature-preview-background: var(--bg-badge);
+            --signature-preview-border: var(--b-fieldset);
+
+            --signature-sortable-border: var(--darkest-gray);
+            --signature-sortable-current-border: var(--bg-brand-alpha);
+
+            --signature-popup-message-error: var(--bg-brand-alpha);
+            --signature-popup-message-success: var(--bg-brand-zeta);
+        }
+    }
+
+    /* Utilities */
+    .signature-height-min-content {
+        height: min-content;
+    }
+    .signature-bg-light-grey {
+        background-color: var(--signature-bg-light-gray);
+    }
+    .signature-bg-lighter-grey {
+        background-color: var(--signature-bg-lighter-gray);
+    }
+    .signature-b-light-grey {
+        background-color: var(--signature-b-light-gray);
+    }
+
+    /* Signature Section */
+    .signature-section {
+        background-color: var(--signature-preview-background);
+        height: min-content;
+        width: 100%;
+        border: solid 1px var(--signature-preview-border);
+    }
+
+    .signature-section a{
+        color: revert;
+    }
+    .signature-section a:hover{
+        color: revert;
+    }
+    .signature-section a:visited{
+        color: revert;
+    }
+
+    /* Drag And Drop */
+    .sortable-field {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        border: dashed 2px var(--signature-sortable-border);
+    }
+
+    .sortable-field input {
+        width: calc(100% - 1em) !important;
+    }
+
+    .sortable-field.currently_dragging {
+        border: dashed 2px var(--signature-sortable-current-border);
+    }
+
+    /* Popup Messages */
+    .signature-copy-message,
+    #username-error {
+        color: #fff;
+        width: fit-content;
+        opacity: 1;
+        position: absolute;
+        bottom: 100%;
+        left: -5%;
+    }
+    .signature-copy-message:before,
+    #username-error:before {
+        top: calc(100% - 0.5rem);
+        left: 15%;
+        rotate: 45deg;
+        width: 1rem;
+        content: "";
+        position: absolute;
+        height: 1rem;
+        z-index: 3;
+    }
+
+    .signature-copy-message,
+    .signature-copy-message:before {
+        background-color: var(--signature-popup-message-success);
+    }
+
+    #username-error,
+    #username-error:before {
+        background-color: var(--signature-popup-message-error);
+    }
+
+    .signature-copy-message[aria-hidden="true"],
+    #username-error[aria-hidden="true"] {
+        opacity: 0;
+        transition: opacity 500ms linear 1000ms;
+    }
+</style>
+
+<!-- Email Lookup Start -->
+<div class="dcf-grid dcf-grid-full dcf-grid-halves@md dcf-col-gap-vw dcf-row-gap-5 dcf-mb-8">
+    <ol class="dcf-mb-0">
+        <li>
+            Enter your My.UNL username (your login username) to start.
+            <form class="dcf-form dcf-pt-4 dcf-pb-4 dcf-relative">
+                <label for="username">Username</label>
+                <div class="dcf-input-group" style="max-width: 40ch;">
+                    <input id="username" type="text">
+                    <button id="start" class="dcf-btn dcf-btn-primary" type="button">Start</button>
                 </div>
-
-                <div class="wdn-band hidden" id="sigBuilder">
-                    <div class="wdn-inner-wrapper">
-                        <div id="controls" class="noselect wdn-light-neutral-band">
-                            <label class="logo-select">
-                                Choose your logo
-                                <select id="logo-select">
-                                    <optgroup id="university-logo-options" label='University'></optgroup>
-                                    <optgroup id="affiliates-logo-options" label='Affiliates'></optgroup>
-                                </select>
-                            </label>
-                            <span><em>Drag to reorder.</em></span>
-                            <div id="fields"></div>
-                            <button id="newRow" class="wdn-button wdn-button-brand">Add a New Row +</button><br><br>
-                            <!-- <input type="checkbox" name="usePicture" id="usePicture" checked="true">Use Picture<br> -->
-                            <div class="wdn-tooltip hang-right copied-tooltip" aria-live="polite"><div><span class="wdn-icon wdn-icon-attention">Your signature has been copied!</span></div>
-                                <button class="wdn-button wdn-button-brand copySignature">
-                                    Copy Your Signature
-                                </button>
-                            </div>
-                        </div>
-                        <div id="signature" style="background-color: #ffffff;">
-                            <div style="background-color:transparent; display:block;">&nbsp;</div>
-                            <div style="background-color:transparent; display:block;">&nbsp;</div>
-                            <table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;">
-                                <tbody>
-                                    <tr>
-                                        <td valign="top" style="border:none;border-top:solid #D00000 2px;padding:18px">
-                                            <img src="" alt="" id="sig-logo" style="display: block;">
-                                        </td>
-                                        <td id="contactInfo" valign="top" style="border:none;padding:15px 18px 18px 0;border-top:solid #D00000 2px;"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div id="sigTest"></div>
-                    </div>
+                <div id="username-error" class="dcf-rounded dcf-p-2 dcf-mt-2" aria-hidden="true" aria-live="polite">
+                    Sorry this username does not exist
                 </div>
-                
-                <div class="wdn-band wdn-light-neutral-band wdn-text-band">
-                    <div class="wdn-inner-wrapper wdn-inner-padding-small wdn-center">
-                        <p><small><em>This application is developed and maintained by <a href="http://dxg.unl.edu/">Digital Experience Group</a>, a partnership of University Communication and Information Technology Services.</em></small></p>
-                        <p><small>Please submit issues to <a href="mailto:support@nebraska.edu">support@nebraska.edu</a></small></p>
-                    </div>
+            </form>
+        </li>
+        <li>
+            Edit your information in the boxes on the right. Make sure
+            <code>mailto:</code> is added before all email addresses and <code>http://</code> is added
+            before all web addresses. Reorder the boxes by clicking and
+            dragging them up and down. Click anywhere on the page after making
+            changes to update the signature preview.
+        </li>
+        <li>
+            Click the “copy your signature” button and your signature will be
+            automatically copied.
+            <div class="dcf-pt-4 dcf-pb-4 dcf-relative">
+                <button class="signature-copy-btn dcf-btn dcf-btn-primary">Copy Your Signature</button>
+                <div class="signature-copy-message dcf-rounded dcf-p-2 dcf-mt-2" aria-hidden="true" aria-live="polite">
+                    Your signature has been copied!
                 </div>
-                
-                <script type="text/javascript">
-
-                require(["config", "jquery", "jqueryui"], function(config, $) {
-                    var signatureHTML = "";
-                    var telephoneReg = /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/;
-                    var dataFields = Object.keys(config.defaultData);
-                    var logoIndex = 0;
-
-                    if (detectIE()) { 
-                        $("#signIn > .wdn-inner-wrapper").append('<div class="wdn_notice alert"><div class="close"><a href="#">Close this notice</a></div><div class="message"><p class="title">Incompatible Browser!</p><p>This web browser is known to produce incorrect signature renderings. Please use Chrome, Firefox or Safari.</p></div></div>');
-
-                        $("#instructions").hide();
-                    }else{
-                        if (mobilecheck()) {
-                            $("#signIn > .wdn-inner-wrapper").append('<div class="wdn_notice alert"><div class="close"><a href="#">Close this notice</a></div><div class="message"><p class="title">Incompatible Browser!</p><p>The Email Signature Generator is not intended to be with on mobile devices. Please return on a desktop computer.</p></div></div>');
-                            $("#instructions").hide();
-                            
-                        }else{
-                            if(config.institutions[0].api !== undefined){
-                                $("#enterUsername").show();
-                            }else{
-                                init(config.defaultData);
-                            }
-                            
-                            $(window).on("copy", function(e){
-                                e.originalEvent.preventDefault();
-                                e.originalEvent.clipboardData.setData('text/plain', "Please paste into a format that supports HTML");
-                                e.originalEvent.clipboardData.setData('text/html', signatureHTML);
-                            });
-
-                            $("#start").on("click", function(){
-                                getUser();
-                            });
-
-                            $("#username").on("keydown", function(e){
-                                if(e.keyCode == 13){
-                                    getUser();
-                                }
-                            });
-
-                            function getUser() {
-                                $("#username").val($("#username").val().replace("@unl.edu",""));
-                                $.get( config.institutions[0].api.replace("{{user}}",$("#username").val()), function( data ) {
-                                    init(data);
-                                }).fail(function(){
-                                    noUser();
-                                });
-                            }
-
-                            function init(userData) {
-
-                                $("#fields").html("");
-
-                                $("#sigBuilder").removeClass("hidden");
-                                $("#username-tooltip > div").css("display","none");
-                                $('html, body').animate({
-                                    scrollTop: $("#sigBuilder").offset().top - 100
-                                }, 2000);
-
-
-                                if(config.institutions[0].dataTransforms !== undefined){
-                                    userData = config.institutions[0].dataTransforms(userData);
-                                }
-
-                                var fields = [];
-
-                                for (var i = 0; i < dataFields.length; i++) {
-                                    if(userData[dataFields[i]] === undefined){
-                                        if(config.defaultData[dataFields[i]] !== null){
-                                            fields.push(config.defaultData[dataFields[i]]);
-                                        }
-                                    }else{
-                                        fields.push(userData[dataFields[i]])    
-                                    }
-                                }
-
-                                var $logo_select = $('#logo-select');
-                                var $university_logo_options = $('#university-logo-options');
-                                var $affiliates_logo_options = $('#affiliates-logo-options');
-
-                                $university_logo_options.html('');
-                                $affiliates_logo_options.html('');
-                                for (var i = 0; i < config.institutions[0].logos.length; i++) {
-                                    var $option = $('<option>', {
-                                        value: i
-                                    }).text(config.institutions[0].logos[i].name);
-                                    if (config.institutions[0].logos[i].optgroup == 'university'){
-                                      $university_logo_options.append($option);
-                                    } else {
-                                      $affiliates_logo_options.append($option);
-                                    }
-                                }
-
-                                $logo_select.on('change', function() {
-                                    logoIndex = $(this).find(":selected").attr('value');
-                                    updateFields();
-                                });
-
-                                for (var i = 0; i < fields.length; i++) {
-                                    if(fields[i]){
-                                        if(fields[i][0].match(telephoneReg)){
-                                            addSelect(fields[i],"tel:"+fields[i][0].replace(" ","").replace(" ",""))
-                                        }else{
-                                            addSelect(fields[i])
-                                        }
-                                    }
-                                }
-
-                                $("#newRow").on("click", function() {
-                                    addSelect([""]);
-                                });
-
-                                $("#fields").bind("DOMSubtreeModified", updateFields);
-                                $("#fields").sortable();
-                                
-                                function SelectText(element) {
-                                    var doc = document,
-                                        text = doc.getElementById(element),
-                                        range, selection;
-                                    if (doc.body.createTextRange) {
-                                        range = document.body.createTextRange();
-                                        range.moveToElementText(text);
-                                        range.select();
-                                    } else if (window.getSelection) {
-                                        selection = window.getSelection();
-                                        range = document.createRange();
-                                        range.selectNodeContents(text);
-                                        selection.removeAllRanges();
-                                        selection.addRange(range);
-                                    }
-                                }
-
-                                $(".copySignature").on("click", function(){
-                                    var copied = true;
-                                    try {
-                                        var copied = document.execCommand("copy");
-                                        if(!copied){
-                                            if(confirm("The copy button is not supported in your browser. You Signature has been selected. Please manually copy with cmd/ctrl+C. ")){
-                                                setTimeout(function(){SelectText("signature");},100);
-                                            }
-                                        }
-                                    } catch(e) {
-                                        copied = false;
-                                    }
-                                    if(copied){
-                                        $(".copied-tooltip > div").css("display","block");
-
-                                        setTimeout(function(){
-                                            $(".copied-tooltip > div").css("display","none");
-                                        }, 5000);
-                                    }
-                                });
-
-                                updateFields();
-
-                                function updateFields(){
-                                    signatureHTML = '<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;"><tbody><tr><td valign="top" style="border:none;border-top:solid '+ config.institutions[0].logos[logoIndex].color +' 2px;padding:18px"><img src="'+config.institutions[0].logos[logoIndex].logo+'" class="logo" alt="'+config.institutions[0].logos[logoIndex].alt+'" aria-hidden="true" style="display: block;"></td><td id="contactInfo" valign="top" style="border:none;padding:15px 18px 18px 0;border-top:solid '+ config.institutions[0].logos[logoIndex].color +' 2px;">';
-                                    $("#contactInfo").html("");
-                                    $("#fields .sortable").each(function(i){
-                                        var info = $(this).find(".name").val();
-                                        var link = $(this).find(".link").val();
-                                        if(link !== undefined && link !== ""){
-                                            info = "<a href='"+link+"'>"+info+"</a>";
-                                        }
-
-                                        if(info){
-                                            switch(i){
-                                                case 0:
-                                                    info = "<strong>"+info+"</strong>";
-                                                    signatureHTML += '<p style="margin:0px 2px 2px 2px;font-family: Helvetica, Arial;color: #454545;font-size:16px;line-height: 18px;">'+info+'</p>';
-                                                    break;
-                                                case 1:
-                                                    signatureHTML += '<p style="font-size:12px;margin:2px;font-style:italic;font-family: Georgia;color: #454545;line-height: 14px;">'+info+'</p>';
-                                                    break;
-                                                default:
-                                                    signatureHTML += '<p style="font-size:10px;margin:2px;font-family: Helvetica, Arial;color: #454545;line-height: 14px;">'+info+'</p>';
-                                                    break;
-                                            }
-                                        }
-                                    });
-
-                                    signatureHTML += '</td></tr></tbody></table>';
-                                    
-                                    $('#signature').html(signatureHTML);
-                                }
-
-                                function addSelect(fieldSet, link){
-                                    link = typeof link !== 'undefined' ? link : "";
-                                    var $select = $("<input>").attr("type","text").addClass("name").val(fieldSet[0]).on("change", updateFields);
-                                    var $sortable = $("<div>").addClass("sortable");
-                                    $sortable.append($select)
-                                    $sortable.append(
-                                        $("<button>").addClass("wdn-button wdn-button-brand").on("click", function(){
-                                            $(this).parent().remove();
-                                        }).html("x")
-                                    );
-                                    $sortable.append($("<input type='text' placeholder='URL'>").val(link).addClass("link").on("change", updateFields));
-                                    $("#fields").append($sortable);
-                                };
-                            }
-
-                            function noUser(){
-                                $("#username-tooltip > div").css("display","block");
-                            }
-                        }
-                    }  
-
-
-
-                    function detectIE() {
-                      var ua = window.navigator.userAgent;
-
-                      // Test values; Uncomment to check result …
-
-                      // IE 10
-                      // ua = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)';
-                      
-                      // IE 11
-                      // ua = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
-                      
-                      // Edge 12 (Spartan)
-                      // ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0';
-                      
-                      // Edge 13
-                      // ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
-
-                      var msie = ua.indexOf('MSIE ');
-                      if (msie > 0) {
-                        // IE 10 or older => return version number
-                        return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
-                      }
-
-                      var trident = ua.indexOf('Trident/');
-                      if (trident > 0) {
-                        // IE 11 => return version number
-                        var rv = ua.indexOf('rv:');
-                        return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
-                      }
-
-                      var edge = ua.indexOf('Edge/');
-                      if (edge > 0) {
-                        // Edge (IE 12+) => return version number
-                        return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
-                      }
-
-                      // other browser
-                      return false;
-                    }
-
-                    function mobilecheck() {
-                        var check = false;
-                        (function(a) {
-                            if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true; })(navigator.userAgent || navigator.vendor || window.opera);
-                        return check;
-                    };
-
-                });
-                </script>
-
-            
             </div>
+        </li>
+        <li class="dcf-mb-0">
+            Copy and paste the highlighted signature into the signature
+            preferences in your mail client (i.e. Outlook, Mac Mail, etc.).
+            Be mindful that many mail clients will reformat text pasted into
+            them. Make sure your client is set to “Keep Source Formatting.”
+        </li>
+    </ol>
+    <figure class="signature-height-min-content">
+        <img class="dcf-b-1 dcf-b-solid signature-b-light-grey" src="https://ucomm.unl.edu/images/email-signature/keepSource.jpg" alt="Keep Source Formatting Example Screenshot." />
+        <figcaption>“Keep Source Formatting” example (Outlook for Mac).</figcaption>
+    </figure>
+</div>
+<!-- Email Lookup End -->
 
-</body>
-</html>
+<div class="dcf-d-none dcf-mb-8" id="signature-builder">
+    <hr>
+
+    <h2>Signature Details</h2>
+
+    <div class="dcf-grid dcf-grid-full dcf-grid-halves@md dcf-col-gap-vw dcf-row-gap-4 dcf-mb-8">
+        <div>
+            <form class="dcf-form">
+                <div class="dcf-form-group">
+                    <label for="logo-select"> Signature Logo </label>
+                    <select id="logo-select">
+                        <optgroup id="university-logo-options" label='University'></optgroup>
+                        <optgroup id="affiliates-logo-options" label='Affiliates'></optgroup>
+                    </select>
+                </div>
+                <fieldset aria-describedby="fields-fieldset-help">
+                    <legend>Fields</legend>
+                    <div class="dcf-d-flex dcf-flex-row dcf-ai-center dcf-gap-4 dcf-mb-5">
+                        <p id="fields-fieldset-help" class="dcf-mb-0">Drag to reorder, or use the space key to toggle drag-mode and the up/down arrow keys to reorder.</p>
+                        <button id="newRow" class="dcf-btn dcf-btn-primary dcf-flex-shrink-0" type="button">Add a New Field</button>
+                    </div>
+                    <ul id="sortable-field-collection" class="dcf-list-bare"></ul>
+                </fieldset>
+            </form>
+        </div>
+
+        <div>
+            <div class="signature-section dcf-d-flex dcf-jc-center dcf-ai-center dcf-p-7 dcf-rounded">
+                <table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;">
+                    <tbody>
+                        <tr>
+                            <td valign="top" style="border:none;border-top:solid #b52929 2px;padding:18px">
+                                <img src="" alt="" id="sig-logo" style="display: block;">
+                            </td>
+                            <td id="contactInfo" valign="top" style="border:none;padding:15px 18px 18px 0;border-top:solid #D00000 2px;"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="dcf-pt-4 dcf-pb-4 dcf-relative">
+                <button class="signature-copy-btn dcf-btn dcf-btn-primary">Copy Your Signature</button>
+                <div class="signature-copy-message dcf-rounded dcf-p-2 dcf-mt-2" aria-hidden="true" aria-live="polite">
+                    Your signature has been copied!
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="dcf-bleed dcf-wrapper dcf-d-flex dcf-jc-center dcf-pt-7 dcf-pb-7 signature-bg-light-grey">
+    <div class="dcf-w-max-lg dcf-txt-center">
+        <p class="dcf-mb-0">
+            <small class="dcf-txt-sm">This application is developed and maintained
+                by <a href="https://ucomm.unl.edu/dxg">Digital Experience Group</a>.
+                Please submit issues to <a href="mailto:support@nebraska.edu">support@nebraska.edu</a>
+            </small>
+        </p>
+    </div>
+</div>
+
+<template id="sortable-field-template">
+    <li class="sortable-field dcf-p-2 dcf-rounded" tabindex="0" draggable="true">
+        <div>
+            <div class="dcf-form-group">
+                <label class="label-text-value">Field Text</label>
+                <input class="field-text-value" type="text">
+            </div>
+            <div class="dcf-form-group dcf-mb-0">
+                <label class="label-text-url">Field URL</label>
+                <input class="field-text-url" type="text">
+            </div>
+        </div>
+        <div>
+            <button class="delete-field-btn dcf-btn dcf-btn-secondary dcf-p-2" aria-label="Delete Field">
+                <svg xmlns="http://www.w3.org/2000/svg" class="dcf-fill-current dcf-w-4 dcf-h-4 dcf-d-block" viewBox="0 0 25 25" >
+                    <path d="M24.6,22.4l-9.9-9.9l9.9-9.9C24.8,2.3,25,1.9,25,1.5s-0.2-0.8-0.4-1.1c-0.6-0.6-1.6-0.6-2.1,0l-9.9,9.9L2.6,0.4
+                        C2-0.1,1-0.1,0.4,0.4C-0.1,1-0.1,2,0.4,2.6l9.9,9.9l-9.9,9.9C0.2,22.7,0,23.1,0,23.5s0.2,0.8,0.4,1.1C0.7,24.9,1.1,25,1.5,25
+                        c0.4,0,0.8-0.1,1.1-0.4l9.9-9.9l9.9,9.9c0.3,0.3,0.7,0.4,1.1,0.4c0,0,0,0,0,0c0.4,0,0.8-0.2,1.1-0.4c0.3-0.3,0.4-0.7,0.4-1.1
+                        C25,23.1,24.8,22.7,24.6,22.4z"/>
+                </svg>
+            </button>
+        </div>
+    </li>
+</template>
+
+<template id="signature-primary-field-template">
+    <p style="margin:0px 2px 2px 2px;font-family: Helvetica, Arial;color: #454545;font-size:16px;line-height: 18px;"></p>
+</template>
+
+<template id="signature-secondary-field-template">
+    <p style="font-size:12px;margin:2px;font-style:italic;font-family: Georgia;color: #454545;line-height: 14px;"></p>
+</template>
+
+<template id="signature-field-template">
+    <p style="font-size:10px;margin:2px;font-family: Helvetica, Arial;color: #454545;line-height: 14px;"></p>
+</template>
+
+<script type="text/javascript" defer>
+    // CONFIG FOR SIGNATURE GENERATOR
+    // This will control the options and flow for signature generator
+    const config = {
+        // (optional) this is the URI for UNL's directory. All fields are returned as arrays. if this is not provided default data will be used. {{user}} is replaced with what is entered in input box.
+        api: 'https://directory.unl.edu/people/{{user}}.json',
+
+        // (optional) this function is called just before the data is used to generate the signature. You can use it to manipulate data. Here is an example removing the 's' from 'Communications'. You could potentially use it to shim an API that doesn't return data in Arrays.
+        dataTransforms: (data) => {
+            if(data.unlHRPrimaryDepartment){
+                data.unlHRPrimaryDepartment[0] = data.unlHRPrimaryDepartment[0].replace("Office of University Communications", "Office of University Communication");
+                data.unlHRPrimaryDepartment[0] = data.unlHRPrimaryDepartment[0].replace("Hixson-Lied Fine & Performing Arts", "College of Fine and Performing Arts");
+            }
+            return data;
+        },
+
+        // (Optional) This function will parse the username input value and get the user's id. This will then be used in the API
+        userTransforms: (data) => {
+            return data.split('@')[0]
+        },
+        logos: [
+            {
+                name: 'N-(UNL Icon)',
+                alt: 'University of Nebraska &ndash; Lincoln',
+                color: '#D00000',
+                logo: 'https://ucomm.unl.edu/images/email-signature/Nebraska_N_RGB_small_on_white.gif',
+                optgroup: 'university'
+            },
+            {
+                name: 'N-Grit/Glory',
+                alt: 'In Our GRIT Our GLORY',
+                color: '#D00000',
+                logo: 'https://ucomm.unl.edu/images/email-signature/Nebrasla_N_GritGlory_Stacked_RGB.gif',
+                optgroup: 'university'
+            },
+            {
+                name: 'N-Museum',
+                alt: 'University of Nebraska State Museum',
+                color: '#2b5135',
+                logo: 'https://ucomm.unl.edu/images/email-signature/unsm.gif',
+                optgroup: 'affiliates'
+            },
+            {
+                name: 'NFS',
+                alt: 'Nebraska Forest Service',
+                color: '#D00000',
+                logo: 'https://ucomm.unl.edu/images/email-signature/nfs.gif',
+                optgroup: 'affiliates'
+            },
+            {
+                name: '4H',
+                alt: '4H',
+                color: '#D00000',
+                logo: 'https://ucomm.unl.edu/images/email-signature/4h.gif',
+                optgroup: 'affiliates'
+            },
+            {
+                name: 'Alumni Association',
+                alt: 'Alumni Association',
+                color: '#D00000',
+                logo: 'https://ucomm.unl.edu/images/email-signature/Alumni_Association.png',
+                optgroup: 'affiliates'
+            },
+        ],
+        defaultData: { // (required) Data to be used if API does not return a field or if no API is provided.
+            // use "fieldName: null" if a field should be omitted if not provided by the API. Otherwise the field is treated as fallback content.
+            // Object keys are used to determine which fields should be pulled from the API.
+            displayName:["Herbie W. Husker"],
+            title:["Employee Title"],
+            organizationName: ["University of Nebraska&ndash;Lincoln"],
+            unlHRPrimaryDepartment:["Department Name"],
+            unlHRAddress:["Lincoln, NE"],
+            telephoneNumber:["(555) 555-5555"]
+        }
+    };
+
+    // Regex for detecting phone numbers
+    const telephoneReg = /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/;
+
+    // Variables for the signature output
+    const sig_logo_element = document.getElementById('sig-logo');
+    const contact_info_element = document.getElementById('contactInfo');
+    const signature_primary_field_template = document.getElementById('signature-primary-field-template');
+    const signature_secondary_field_template = document.getElementById('signature-secondary-field-template');
+    const signature_field_template = document.getElementById('signature-field-template');
+
+    // Variables for the fields
+    const signature_builder = document.getElementById('signature-builder');
+    const field_collection = document.getElementById('sortable-field-collection');
+    const field_template_element = document.getElementById('sortable-field-template');
+    const add_field_btn = document.getElementById('newRow');
+
+    // Sets up event listeners and variables for drag and drop
+    let selected_field = null;
+    field_collection.addEventListener('drop', (e) => {
+        e.preventDefault();
+    });
+    field_collection.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+    });
+
+    // Add event listener for new row
+    add_field_btn.addEventListener('click', () => {
+        add_new_field("");
+        render_signature();
+    });
+
+    // Set up variables for logo select and adds the options
+    const logo_select = document.getElementById('logo-select');
+    const logo_select_group_university = document.getElementById('university-logo-options');
+    const logo_select_group_affiliates = document.getElementById('affiliates-logo-options');
+    config.logos.forEach((logo) => {
+
+        // Create new option for the
+        const new_option = document.createElement('option');
+        new_option.innerText = logo.name;
+        new_option.value = logo.logo;
+        new_option.dataset.color = logo.color;
+        new_option.dataset.altText = logo.alt;
+
+        // Append it to the right section
+        if (logo.optgroup === "university") {
+            logo_select_group_university.append(new_option);
+        } else {
+            logo_select_group_affiliates.append(new_option);
+        }
+    });
+
+    // Re-render signature when logo is changed
+    logo_select.addEventListener('input', () => {
+        render_signature();
+    });
+
+    // Add event listeners
+    const copy_buttons = document.querySelectorAll('.signature-copy-btn');
+    copy_buttons.forEach((single_copy_button) => {
+        single_copy_button.addEventListener('click', () => {
+
+            // Ignore if signature is not set
+            if (signature_builder.classList.contains('dcf-d-none')) {
+                return;
+            }
+
+            // Select the text and execute a copy
+            select_text(".signature-section");
+            const copied = document.execCommand("copy");
+            if(!copied){
+                // if we get an error then tell them to do the copy themselves
+                confirm("The copy button is not supported in your browser. You Signature has been selected. Please manually copy with cmd/ctrl+C. ");
+            } else {
+                // if no error then we clear selection
+                clear_select();
+            }
+        });
+    });
+
+    // Listen for copy commands and if we are trying to copy the signature then call copy signature
+    window.addEventListener('copy', (e) => {
+        if (e.target.closest('.signature-section') === null) {
+            return;
+        }
+        copy_signature(e);
+        e.preventDefault();
+    })
+
+    // INIT the control flow
+    if (config.api !== undefined) {
+        // Get the html inputs and set up their event listeners
+        const username_input = document.getElementById('username');
+        const start_button = document.getElementById('start');
+
+        // Load the user when they submit the UID
+        username_input.addEventListener('keydown', (e) => {
+            if (e.code === "Enter") {
+                let username = username_input.value;
+
+                // Call config transform user
+                if(config.userTransforms !== undefined){
+                    username = config.userTransforms(username);
+                }
+
+                load_user(username);
+                e.preventDefault();
+            }
+        });
+        start_button.addEventListener('click', (e) => {
+            let username = username_input.value;
+
+            // Call config transform user
+            if(config.userTransforms !== undefined){
+                username = config.userTransforms(username);
+            }
+
+            load_user(username);
+        });
+    } else {
+
+        // Use default data if no API to call
+        parse_user_data(config.defaultData);
+    }
+
+    /**
+     * Calls the config API and sends user data to be parsed
+     * @param { string } user_to_look_up
+     */
+    async function load_user(user_to_look_up) {
+        // Formats the URL and calls it
+        const api_url = config.api.replace('{{user}}', user_to_look_up);
+        const response = await fetch(api_url);
+
+        // If we get the data back we can parse it
+        if (response.ok) {
+            const user_json = await response.json();
+            parse_user_data(user_json);
+        } else {
+
+            // If not we show the error message
+            const username_error = document.getElementById('username-error');
+            username_error.classList.remove('dcf-d-none');
+            setTimeout( () => {
+                username_error.classList.add('dcf-d-none');
+            }, 2000);
+        }
+    }
+
+    /**
+     * Parse the user data and sends calls to create fields
+     * @param { object } user_data
+     */
+    function parse_user_data (user_data) {
+
+        // Call config transform data
+        if(config.dataTransforms !== undefined){
+            user_data = config.dataTransforms(user_data);
+        }
+
+        // Clears previous fields
+        field_collection.innerHTML = "";
+
+        // Loop through all the default data and see if the incoming data has that value
+        for (const key in config.defaultData) {
+            let field_text = user_data[key]?.[0] || user_data[key] || config.defaultData[key];
+            let field_url = "";
+
+            // If it is a phone number then set the URL to a telephone link
+            if (telephoneReg.test(field_text)) {
+                field_url = `tel:${field_text}`;
+            }
+
+            // Creates the new field
+            add_new_field(field_text, field_url);
+        }
+
+        // Re-render the signature and show the builder
+        render_signature();
+        signature_builder.classList.remove('dcf-d-none');
+    }
+
+    /**
+     * Creates a new field and adds it to the builder
+     * @param {string} field_text
+     * @param {string} field_url
+     */
+    function add_new_field(field_text, field_url="") {
+
+        // Creates a copy of the field template
+        const field_template = field_template_element.content.children[0].cloneNode(true);
+
+        // Sets up the variables
+        const field_template_id = generate_UUID();
+        const field_text_value = field_template.querySelector(".field-text-value");
+        const field_text_url = field_template.querySelector(".field-text-url");
+        const label_text_value = field_template.querySelector(".label-text-value");
+        const label_text_url = field_template.querySelector(".label-text-url");
+        const delete_field_btn = field_template.querySelector(".delete-field-btn");
+
+        // Sets id of the field
+        field_template.id = field_template_id;
+
+        // Sets values of the field text
+        field_text_value.id = field_template_id + '_text';
+        field_text_value.value = field_text;
+        label_text_value.setAttribute('for', field_text_value.id);
+
+        // Sets values of the field url
+        field_text_url.id = field_template_id + '_url';
+        field_text_url.value = field_url;
+        label_text_url.setAttribute('for', field_text_url.id);
+
+        // Adds it to the list of fields
+        field_collection.append(field_template);
+
+        // If the inputs are changed we will re-render
+        field_template.addEventListener('input', () => {
+            render_signature();
+        }, true);
+
+        // If we click the delete button then remove the element and re-render
+        delete_field_btn.addEventListener('click', () => {
+            field_template.remove();
+            render_signature();
+        });
+
+        // Set up drag and drop event listeners
+        field_template.addEventListener('dragstart', dragStart);
+        field_template.addEventListener('dragover', dragOver);
+        field_template.addEventListener('dragend', dragEnd);
+
+        // Set up keyboard events for the drag and drop
+        field_template.addEventListener('keydown', (e) => {
+            if (!e.target.classList.contains('sortable-field')) { return; }
+            switch(e.code) {
+
+                // Space will toggle the drag mode
+                case 'Space':
+                    if (field_template.classList.contains('currently_dragging')) {
+                        field_template.classList.remove('currently_dragging');
+                    } else {
+                        field_template.classList.add('currently_dragging');
+                    }
+                    e.preventDefault();
+                    break;
+
+                // Arrow Up will move the field up
+                case 'ArrowUp':
+                    if (field_template.previousElementSibling === null) { return; }
+                    if (field_template.classList.contains('currently_dragging')) {
+                        field_collection.insertBefore(field_template, field_template.previousElementSibling);
+                        field_template.focus();
+                    } else {
+                        field_template.previousElementSibling.focus();
+                    }
+                    e.preventDefault();
+                    render_signature();
+                    break;
+
+                // Arrow Down will move the field down
+                case 'ArrowDown':
+                    if (field_template.nextElementSibling === null) { return; }
+                    if (field_template.classList.contains('currently_dragging')) {
+                        field_collection.insertBefore(field_template.nextElementSibling, field_template);
+                        field_template.focus();
+                    }else {
+                        field_template.nextElementSibling.focus();
+                    }
+                    e.preventDefault();
+                    render_signature();
+                    break;
+            }
+        });
+    }
+
+
+    /**
+     * Handles the drag start events
+     * @param {DragEvent} e
+     * @returns void
+     */
+    function dragStart(e) {
+
+        // If we started a drag with the keyboard cancel it
+        field_collection.querySelectorAll('.currently_dragging').forEach((dragged_element) => {
+            dragged_element.classList.remove('currently_dragging');
+        });
+
+        // Let the drag know we are moving the element
+        e.dataTransfer.effectAllowed = 'move'
+        e.dataTransfer.setData('text/plain', null);
+
+        // Sets us selected field variables
+        selected_field = e.target;
+        e.target.classList.add('currently_dragging');
+    }
+
+    /**
+     * Handles the dragover events
+     * @param {DragEvent} e
+     * @returns void
+     */
+    function dragOver(e) {
+
+        // If we drag over itself ignore
+        const target = e.target.closest('.sortable-field');
+        if (selected_field.isEqualNode(target)) { return; }
+
+        // If the dragged element is before the event target then insert before (Move Up)
+        if (isBefore(selected_field, target)) {
+            field_collection.insertBefore(selected_field, target);
+        } else {
+            // Else the dragged element is after the event target then insert before the next element (Move Down)
+            field_collection.insertBefore(selected_field, target.nextElementSibling);
+        }
+
+        // Re-render the signature
+        render_signature();
+    }
+
+    /**
+     * Handles when the drag is done
+     * @param {DragEvent} e
+     */
+    function dragEnd(e) {
+
+        // Clear the dragged element
+        selected_field = null;
+        e.target.classList.remove('currently_dragging');
+
+        // Re-render the signature
+        render_signature();
+    }
+
+    /**
+     * Renders the signature
+     */
+    function render_signature() {
+
+        // Clears the current data in the signature
+        contact_info_element.innerHTML = "";
+
+        // Gets the selected logo and its values
+        const selected_logo_option = logo_select.options[logo_select.selectedIndex];
+        const selected_logo_url = selected_logo_option.value;
+        const selected_logo_alt = selected_logo_option.dataset.altText;
+        const selected_logo_color = selected_logo_option.dataset.color;
+
+        // Sets the logo and the border top color
+        sig_logo_element.src = selected_logo_url;
+        sig_logo_element.setAttribute('alt', selected_logo_alt);
+        contact_info_element.style.borderTopColor = selected_logo_color;
+        sig_logo_element.parentElement.style.borderTopColor = selected_logo_color;
+
+        // Loops through the fields and add them to the signature
+        let field_count = 0;
+        field_collection.querySelectorAll('.sortable-field').forEach((field) => {
+            const field_text = field.querySelector('.field-text-value')?.value || "";
+            let field_url = field.querySelector('.field-text-url')?.value || "";
+
+            // The first line is big and bold, seconds line is italic, and the rest of the lines are small
+            // We always want there to be a space
+            let field_paragraph_element = "";
+            let field_paragraph_value = field_text === "" ? "&nbsp;" : field_text;
+            if (field_count === 0) {
+                field_paragraph_element = signature_primary_field_template.content.children[0].cloneNode(true);
+                field_paragraph_value = `<strong>${field_paragraph_value}</strong>`;
+            } else if (field_count === 1) {
+                field_paragraph_element = signature_secondary_field_template.content.children[0].cloneNode(true);
+            } else {
+                field_paragraph_element = signature_field_template.content.children[0].cloneNode(true);
+            }
+
+            // If we have a URL then make it a link
+            if (field_text !== "" && field_url !== "") {
+                field_paragraph_value = `<a href="${field_url}">${field_paragraph_value}</a>`;
+            }
+
+            // Set the innerHTML and append it to the signature
+            field_paragraph_element.innerHTML = field_paragraph_value;
+            contact_info_element.append(field_paragraph_element);
+
+            // Only count up if there was actual content there
+            if (field_text !== "") {
+                field_count++;
+            }
+        });
+    }
+
+    /**
+     * Copies the signature and saves it to the clipboard
+     * @param {ClipboardEvent} copy_event
+     */
+    function copy_signature(copy_event) {
+        // Gets the signature and saves it to the clip board
+        const signature_element = document.querySelector('.signature-section table').outerHTML;
+        copy_event.clipboardData.setData('text/plain', "Please paste into a format that supports HTML");
+        copy_event.clipboardData.setData('text/html', signature_element);
+
+        // Sets the message and clears it after 2 seconds
+        document.querySelectorAll('.signature-copy-message').forEach((single_message) => {
+            single_message.classList.remove('dcf-d-none');
+        });
+        setTimeout( () => {
+            document.querySelectorAll('.signature-copy-message').forEach((single_message) => {
+                single_message.classList.add('dcf-d-none');
+            });
+        }, 2000);
+    }
+
+    /**
+     * Checks if element A is before element B
+     * @param { HTMLElement } element_a
+     * @param { HTMLElement } element_b
+     * @returns { Bool } If element A is before B
+     */
+    function isBefore(element_a, element_b) {
+        return element_a.compareDocumentPosition(element_b) & Node.DOCUMENT_POSITION_PRECEDING;
+    }
+
+    /**
+     * Selects the text of the element in the query selector
+     * @param {string} element_query_selection
+     */
+    function select_text(element_query_selection) {
+        const text = document.querySelector(element_query_selection);
+        if (document.body.createTextRange) {
+            let range = document.body.createTextRange();
+            range.moveToElementText(text);
+            range.select();
+        } else if (window.getSelection) {
+            let selection = window.getSelection();
+            let range = document.createRange();
+            range.selectNodeContents(text);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+    }
+
+    /**
+     * Clears the selected text
+     */
+    function clear_select() {
+        if (window.getSelection) {
+            window.getSelection().removeAllRanges();
+        } else if (document.selection) {
+            document.selection.empty();
+        }
+    }
+
+    /**
+     *  Generates a random UUID
+     * @returns { string }
+     */
+    function generate_UUID() {
+        return 'xxxx-xxxx-xxx-xxxx'.replace(/[x]/g, (c) => {
+            let r = Math.random() * 16 | 0;
+            let v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+</script>
