@@ -435,6 +435,13 @@
         const username_input = document.getElementById('username');
         const start_button = document.getElementById('start');
 
+        const params = new URLSearchParams(document.location.search);
+        const username_param = params.get("username");
+
+        if (username_param !== null) {
+            load_user(username_param);
+        }
+
         // Load the user when they submit the UID
         username_input.addEventListener('keydown', (e) => {
             if (e.code === "Enter") {
