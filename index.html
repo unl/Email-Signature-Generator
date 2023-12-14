@@ -435,9 +435,9 @@
         const username_input = document.getElementById('username');
         const start_button = document.getElementById('start');
 
+        // If the username param is set auto load the user
         const params = new URLSearchParams(document.location.search);
         const username_param = params.get("username");
-
         if (username_param !== null) {
             load_user(username_param);
         }
