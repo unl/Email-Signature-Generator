@@ -70,6 +70,7 @@
         display: grid;
         grid-template-columns: 1fr auto;
         border: dashed 2px var(--signature-sortable-border);
+        cursor: move;
     }
 
     .sortable-field input {
@@ -137,10 +138,9 @@
         </li>
         <li>
             Edit your information in the boxes on the right. Make sure
-            <code>mailto:</code> is added before all email addresses and <code>http://</code> is added
+            <code>mailto:</code> is added before all email addresses and <code>https://</code> is added
             before all web addresses. Reorder the boxes by clicking and
-            dragging them up and down. Click anywhere on the page after making
-            changes to update the signature preview.
+            dragging them up and down.
         </li>
         <li>
             Click the “copy your signature” button and your signature will be
@@ -185,7 +185,7 @@
                     <legend>Fields</legend>
                     <div class="dcf-d-flex dcf-flex-row dcf-ai-center dcf-gap-4 dcf-mb-5">
                         <p id="fields-fieldset-help" class="dcf-mb-0">Drag to reorder, or use the space key to toggle drag-mode and the up/down arrow keys to reorder.</p>
-                        <button id="newRow" class="dcf-btn dcf-btn-primary dcf-flex-shrink-0" type="button">Add a New Field</button>
+                        <button id="newRow" class="dcf-btn dcf-btn-primary dcf-flex-shrink-0" type="button">Append a New Field</button>
                     </div>
                     <ul id="sortable-field-collection" class="dcf-list-bare"></ul>
                 </fieldset>
@@ -193,22 +193,24 @@
         </div>
 
         <div>
-            <div class="signature-section dcf-d-flex dcf-jc-center dcf-ai-center dcf-p-7 dcf-rounded">
-                <table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;">
-                    <tbody>
-                        <tr>
-                            <td valign="top" style="border:none;border-top:solid #b52929 2px;padding:18px">
-                                <img src="" alt="" id="sig-logo" style="display: block;">
-                            </td>
-                            <td id="contactInfo" valign="top" style="border:none;padding:15px 18px 18px 0;border-top:solid #D00000 2px;"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="dcf-pt-4 dcf-pb-4 dcf-relative">
-                <button class="signature-copy-btn dcf-btn dcf-btn-primary">Copy Your Signature</button>
-                <div class="signature-copy-message dcf-rounded dcf-p-2 dcf-mt-2" aria-hidden="true" aria-live="polite">
-                    Your signature has been copied!
+            <div class="dcf-sticky" style="top: 5rem;">
+                <div class="signature-section dcf-d-flex dcf-jc-center dcf-ai-center dcf-p-7 dcf-rounded">
+                    <table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;">
+                        <tbody>
+                            <tr>
+                                <td valign="top" style="border:none;border-top:solid #b52929 2px;padding:18px">
+                                    <img src="" alt="" id="sig-logo" style="display: block;">
+                                </td>
+                                <td id="contactInfo" valign="top" style="border:none;padding:15px 18px 18px 0;border-top:solid #D00000 2px;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="dcf-pt-4 dcf-pb-4 dcf-relative">
+                    <button class="signature-copy-btn dcf-btn dcf-btn-primary">Copy Your Signature</button>
+                    <div class="signature-copy-message dcf-rounded dcf-p-2 dcf-mt-2" aria-hidden="true" aria-live="polite">
+                        Your signature has been copied!
+                    </div>
                 </div>
             </div>
         </div>
@@ -369,6 +371,7 @@
     add_field_btn.addEventListener('click', () => {
         add_new_field("");
         render_signature();
+        Array.from(document.querySelectorAll('.sortable-field'))?.at(-1)?.scrollIntoView?.();
     });
 
     // Set up variables for logo select and adds the options
@@ -527,6 +530,7 @@
         // Re-render the signature and show the builder
         render_signature();
         signature_builder.classList.remove('dcf-d-none');
+        signature_builder.scrollIntoView();
     }
 
     /**
