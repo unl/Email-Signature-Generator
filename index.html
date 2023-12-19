@@ -139,8 +139,7 @@
         <li>
             Edit your information in the boxes on the right. Make sure
             <code>mailto:</code> is added before all email addresses and <code>https://</code> is added
-            before all web addresses. Reorder the boxes by clicking and
-            dragging them up and down.
+            before all web addresses. Reorder the boxes drag and drop, or use the arrow buttons.
         </li>
         <li>
             Click the “copy your signature” button and your signature will be
@@ -172,7 +171,7 @@
     <h2>Signature Details</h2>
 
     <div class="dcf-grid dcf-grid-full dcf-grid-halves@md dcf-col-gap-vw dcf-row-gap-4 dcf-mb-8">
-        <div>
+        <div class="dcf-2nd dcf-1st@md">
             <form class="dcf-form">
                 <div class="dcf-form-group">
                     <label for="logo-select"> Signature Logo </label>
@@ -184,7 +183,7 @@
                 <fieldset aria-describedby="fields-fieldset-help">
                     <legend>Fields</legend>
                     <div class="dcf-d-flex dcf-flex-row dcf-ai-center dcf-gap-4 dcf-mb-5">
-                        <p id="fields-fieldset-help" class="dcf-mb-0">Drag to reorder, or use the space key to toggle drag-mode and the up/down arrow keys to reorder.</p>
+                        <p id="fields-fieldset-help" class="dcf-mb-0">Drag and drop, or use the arrow buttons to reorder.</p>
                         <button id="newRow" class="dcf-btn dcf-btn-primary dcf-flex-shrink-0" type="button">Append a New Field</button>
                     </div>
                     <ul id="sortable-field-collection" class="dcf-list-bare"></ul>
@@ -192,9 +191,9 @@
             </form>
         </div>
 
-        <div>
+        <div class="dcf-1st dcf-2nd@md">
             <div class="dcf-sticky" style="top: 5rem;">
-                <div class="signature-section dcf-d-flex dcf-jc-center dcf-ai-center dcf-p-7 dcf-rounded">
+                <div class="signature-section dcf-d-flex dcf-jc-center dcf-ai-center dcf-pt-7 dcf-pb-5 dcf-pl-2 dcf-pr-2 dcf-rounded">
                     <table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;">
                         <tbody>
                             <tr>
@@ -229,7 +228,7 @@
 </div>
 
 <template id="sortable-field-template">
-    <li class="sortable-field dcf-p-2 dcf-rounded" tabindex="0" draggable="true">
+    <li class="sortable-field dcf-p-2 dcf-rounded" draggable="true">
         <div>
             <div class="dcf-form-group">
                 <label class="label-text-value">Field Text</label>
@@ -240,8 +239,8 @@
                 <input class="field-text-url" type="text">
             </div>
         </div>
-        <div>
-            <button class="delete-field-btn dcf-btn dcf-btn-secondary dcf-p-2" aria-label="Delete Field">
+        <div class="dcf-d-flex dcf-flex-col dcf-jc-between">
+            <button class="delete-field-btn dcf-btn dcf-btn-secondary dcf-p-2" aria-label="Delete Field" type="button">
                 <svg xmlns="http://www.w3.org/2000/svg" class="dcf-fill-current dcf-w-4 dcf-h-4 dcf-d-block" viewBox="0 0 25 25" >
                     <path d="M24.6,22.4l-9.9-9.9l9.9-9.9C24.8,2.3,25,1.9,25,1.5s-0.2-0.8-0.4-1.1c-0.6-0.6-1.6-0.6-2.1,0l-9.9,9.9L2.6,0.4
                         C2-0.1,1-0.1,0.4,0.4C-0.1,1-0.1,2,0.4,2.6l9.9,9.9l-9.9,9.9C0.2,22.7,0,23.1,0,23.5s0.2,0.8,0.4,1.1C0.7,24.9,1.1,25,1.5,25
@@ -249,6 +248,29 @@
                         C25,23.1,24.8,22.7,24.6,22.4z"/>
                 </svg>
             </button>
+            <div class="dcf-d-flex dcf-flex-col dcf-row-gap-3">
+                <button class="up-field-btn dcf-btn dcf-btn-secondary dcf-p-2" aria-label="Move Field Up" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="dcf-fill-current dcf-w-4 dcf-h-4 dcf-d-block" viewBox="0 0 25 26">
+                        <path d="M24.6,13L13.7,0.6l-0.1-0.2l-0.1,0c-0.5-0.4-1.4-0.4-1.9,0
+                            L0.4,13C0.1,13.3,0,13.7,0,14.1c0,0.4,0.2,0.8,0.5,1
+                            c0.6,0.5,1.6,0.5,2.1-0.1L11,5.5v19c0,0.8,0.7,1.5,1.5,1.5
+                            s1.5-0.7,1.5-1.5v-19l8.4,9.5c0.5,0.6,1.5,0.7,2.1,0.1
+                            c0.3-0.3,0.5-0.6,0.5-1C25,13.7,24.9,13.3,24.6,13z"/>
+                    </svg>
+                </button>
+                <button class="down-field-btn dcf-btn dcf-btn-secondary dcf-p-2" aria-label="Move Field Down" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="dcf-fill-current dcf-w-4 dcf-h-4 dcf-d-block" viewBox="0 0 24 24">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="dcf-fill-current dcf-w-4 dcf-h-4 dcf-d-block" viewBox="0 0 25 26">
+                            <path d="M24.5,10.9c-0.3-0.3-0.7-0.4-1.1-0.4c-0.4,0-0.8,0.2-1,0.5
+                                L14,20.5v-19C14,0.7,13.3,0,12.5,0S11,0.7,11,1.5v19L2.6,11
+                                c-0.3-0.3-0.6-0.5-1-0.5c-0.4,0-0.8,0.1-1.1,0.4c-0.3,0.3-0.5,0.6-0.5,1
+                                c0,0.4,0.1,0.8,0.4,1.1l11,12.4l0.1,0.2l0.1,0.1
+                                c0,0,0.1,0.1,0.2,0.1l0.2,0.1c0.2,0.1,0.4,0.1,0.6,0.1
+                                c0.2,0,0.4,0,0.6-0.1l0.2-0.1c0.1,0,0.1-0.1,0.2-0.1L24.6,13
+                                c0.3-0.3,0.4-0.7,0.4-1.1C25,11.5,24.8,11.1,24.5,10.9z"/>
+                        </svg>
+                </button>
+            </div>
         </div>
     </li>
 </template>
@@ -582,47 +604,79 @@
         field_template.addEventListener('dragstart', dragStart);
         field_template.addEventListener('dragover', dragOver);
         field_template.addEventListener('dragend', dragEnd);
+        field_template.querySelector('.up-field-btn')?.addEventListener('click', moveFieldUp);
+        field_template.querySelector('.down-field-btn')?.addEventListener('click', moveFieldDown);
 
-        // Set up keyboard events for the drag and drop
-        field_template.addEventListener('keydown', (e) => {
-            if (!e.target.classList.contains('sortable-field')) { return; }
-            switch(e.code) {
+        disableFirstAndLastButtons();
+    }
 
-                // Space will toggle the drag mode
-                case 'Space':
-                    if (field_template.classList.contains('currently_dragging')) {
-                        field_template.classList.remove('currently_dragging');
-                    } else {
-                        field_template.classList.add('currently_dragging');
-                    }
-                    e.preventDefault();
-                    break;
+    /**
+     * Moves the clicked field up in the list
+     * @param { Mouse Event } e
+     * @returns void
+     */
+    function moveFieldUp(e) {
+        // Get the field clicked
+        const field_clicked = e.target.closest('.sortable-field');
+        if (field_clicked === null) { return; }
 
-                // Arrow Up will move the field up
-                case 'ArrowUp':
-                    if (field_template.previousElementSibling === null) { return; }
-                    if (field_template.classList.contains('currently_dragging')) {
-                        field_collection.insertBefore(field_template, field_template.previousElementSibling);
-                        field_template.focus();
-                    } else {
-                        field_template.previousElementSibling.focus();
-                    }
-                    e.preventDefault();
-                    render_signature();
-                    break;
+        // Get the field to swap
+        const field_to_swap = field_clicked.previousElementSibling;
+        if (field_to_swap === null) { return; }
 
-                // Arrow Down will move the field down
-                case 'ArrowDown':
-                    if (field_template.nextElementSibling === null) { return; }
-                    if (field_template.classList.contains('currently_dragging')) {
-                        field_collection.insertBefore(field_template.nextElementSibling, field_template);
-                        field_template.focus();
-                    }else {
-                        field_template.nextElementSibling.focus();
-                    }
-                    e.preventDefault();
-                    render_signature();
-                    break;
+        // Swap Elements
+        field_collection.insertBefore(field_clicked, field_to_swap);
+
+        // Set the buttons and re-render the signature
+        disableFirstAndLastButtons();
+        render_signature();
+    }
+
+    /**
+     * Moves the clicked field down in the list
+     * @param { Mouse Event } e
+     * @returns void
+     */
+    function moveFieldDown(e) {
+        // Get the field clicked
+        const field_clicked = e.target.closest('.sortable-field');
+        if (field_clicked === null) { return; }
+
+        // Get the field to swap
+        const field_to_swap = field_clicked.nextElementSibling;
+        if (field_to_swap === null) { return; }
+
+        // Swap Elements
+        field_collection.insertBefore(field_to_swap, field_clicked);
+
+        // Set the buttons and re-render the signature
+        disableFirstAndLastButtons();
+        render_signature();
+    }
+
+    /**
+     * This function will enable all field move buttons
+     * but disable the first and last
+     * @returns void
+     */
+    function disableFirstAndLastButtons() {
+        // Get all the fields
+        const all_fields = field_collection.querySelectorAll('.sortable-field');
+        all_fields.forEach((single_field, index) => {
+            // Get their up and down arrow buttons
+            const up_arrow = single_field.querySelector('.up-field-btn');
+            const down_arrow = single_field.querySelector('.down-field-btn');
+
+            // Enable them
+            up_arrow.removeAttribute('disabled');
+            down_arrow.removeAttribute('disabled');
+
+            // Disable the first and last button
+            if (index === 0) {
+                up_arrow.setAttribute('disabled', 'disabled');
+            }
+            if (index == all_fields.length - 1) {
+                down_arrow.setAttribute('disabled', 'disabled');
             }
         });
     }
