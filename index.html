@@ -126,9 +126,9 @@
         <li>
             Enter your My.UNL username (your login username) to start.
             <form class="dcf-form dcf-pt-4 dcf-pb-4 dcf-relative">
-                <label for="username">Username</label>
+                <label for="username-to-look-up">Username</label>
                 <div class="dcf-input-group" style="max-width: 40ch;">
-                    <input id="username" type="text">
+                    <input id="username-to-look-up" name="person-data" placeholder="hhusker1" type="text">
                     <button id="start" class="dcf-btn dcf-btn-primary" type="button">Start</button>
                 </div>
                 <div id="username-error" class="dcf-rounded dcf-p-2 dcf-mt-2" aria-hidden="true" aria-live="polite">
@@ -184,7 +184,7 @@
                     <legend>Fields</legend>
                     <div class="dcf-d-flex dcf-flex-row dcf-ai-center dcf-gap-4 dcf-mb-5">
                         <p id="fields-fieldset-help" class="dcf-mb-0">Drag and drop, or use the arrow buttons to reorder.</p>
-                        <button id="newRow" class="dcf-btn dcf-btn-primary dcf-flex-shrink-0" type="button">Append a New Field</button>
+                        <button id="new-row" class="dcf-btn dcf-btn-primary dcf-flex-shrink-0" type="button">Append a New Field</button>
                     </div>
                     <ul id="sortable-field-collection" class="dcf-list-bare"></ul>
                 </fieldset>
@@ -377,7 +377,7 @@
     const signature_builder = document.getElementById('signature-builder');
     const field_collection = document.getElementById('sortable-field-collection');
     const field_template_element = document.getElementById('sortable-field-template');
-    const add_field_btn = document.getElementById('newRow');
+    const add_field_btn = document.getElementById('new-row');
 
     // Sets up event listeners and variables for drag and drop
     let selected_field = null;
@@ -457,7 +457,7 @@
     // INIT the control flow
     if (config.api !== undefined) {
         // Get the html inputs and set up their event listeners
-        const username_input = document.getElementById('username');
+        const username_input = document.getElementById('username-to-look-up');
         const start_button = document.getElementById('start');
 
         // If the username param is set auto load the user
