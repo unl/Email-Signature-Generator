@@ -1,7 +1,7 @@
 <style>
     /* CONFIG FOR SIGNATURE GENERATOR */
     /* Color Config */
-    :root {
+    .ucomm-signature-generator {
         --signature-bg-light-gray: var(--bg-light-gray);
         --signature-bg-lighter-gray: var(--bg-lighter-gray);
         --signature-b-light-gray: var(--b-light-gray);
@@ -17,7 +17,7 @@
     }
 
     @media (prefers-color-scheme: dark) {
-        :root {
+        .ucomm-signature-generator {
             --signature-bg-light-gray: var(--bg-light-gray);
             --signature-bg-lighter-gray: var(--bg-lighter-gray);
             --signature-b-light-gray: var(--b-light-gray);
@@ -63,6 +63,10 @@
     }
     .signature-section a:visited{
         color: revert;
+    }
+
+    .signature-section img {
+        color: black;
     }
 
     /* Drag And Drop */
@@ -120,172 +124,174 @@
     }
 </style>
 
-<!-- Email Lookup Start -->
-<div class="dcf-grid dcf-grid-full dcf-grid-halves@md dcf-col-gap-vw dcf-row-gap-5 dcf-mb-8">
-    <ol class="dcf-mb-0">
-        <li>
-            Enter your My.UNL username (your login username) to start.
-            <form class="dcf-form dcf-pt-4 dcf-pb-4 dcf-relative">
-                <label for="username-to-look-up">Username</label>
-                <div class="dcf-input-group" style="max-width: 40ch;">
-                    <input id="username-to-look-up" name="person-data" placeholder="hhusker1" type="text">
-                    <button id="start" class="dcf-btn dcf-btn-primary" type="button">Start</button>
-                </div>
-                <div id="username-error" class="dcf-rounded dcf-p-2 dcf-mt-2" aria-hidden="true" aria-live="polite">
-                    Sorry this username does not exist
-                </div>
-            </form>
-        </li>
-        <li>
-            Edit your information in the boxes on the right. Make sure
-            <code>mailto:</code> is added before all email addresses and <code>https://</code> is added
-            before all web addresses. Reorder the boxes drag and drop, or use the arrow buttons.
-        </li>
-        <li>
-            Click the “copy your signature” button and your signature will be
-            automatically copied.
-            <div class="dcf-pt-4 dcf-pb-4 dcf-relative">
-                <button class="signature-copy-btn dcf-btn dcf-btn-primary">Copy Your Signature</button>
-                <div class="signature-copy-message dcf-rounded dcf-p-2 dcf-mt-2" aria-hidden="true" aria-live="polite">
-                    Your signature has been copied!
-                </div>
-            </div>
-        </li>
-        <li class="dcf-mb-0">
-            Copy and paste the highlighted signature into the signature
-            preferences in your mail client (i.e. Outlook, Mac Mail, etc.).
-            Be mindful that many mail clients will reformat text pasted into
-            them. Make sure your client is set to “Keep Source Formatting.”
-        </li>
-    </ol>
-    <figure class="signature-height-min-content">
-        <img class="dcf-b-1 dcf-b-solid signature-b-light-grey" src="https://ucomm.unl.edu/images/email-signature/keepSource.jpg" alt="Keep Source Formatting Example Screenshot." />
-        <figcaption>“Keep Source Formatting” example (Outlook for Mac).</figcaption>
-    </figure>
-</div>
-<!-- Email Lookup End -->
-
-<div class="dcf-d-none dcf-mb-8" id="signature-builder">
-    <hr>
-
-    <h2>Signature Details</h2>
-
-    <div class="dcf-grid dcf-grid-full dcf-grid-halves@md dcf-col-gap-vw dcf-row-gap-4 dcf-mb-8">
-        <div class="dcf-2nd dcf-1st@md">
-            <form class="dcf-form">
-                <div class="dcf-form-group">
-                    <label for="logo-select"> Signature Logo </label>
-                    <select id="logo-select">
-                        <optgroup id="university-logo-options" label='University'></optgroup>
-                        <optgroup id="affiliates-logo-options" label='Affiliates'></optgroup>
-                    </select>
-                </div>
-                <fieldset aria-describedby="fields-fieldset-help">
-                    <legend>Fields</legend>
-                    <div class="dcf-d-flex dcf-flex-row dcf-ai-center dcf-gap-4 dcf-mb-5">
-                        <p id="fields-fieldset-help" class="dcf-mb-0">Drag and drop, or use the arrow buttons to reorder.</p>
-                        <button id="new-row" class="dcf-btn dcf-btn-primary dcf-flex-shrink-0" type="button">Append a New Field</button>
+<div class="ucomm-signature-generator">
+    <!-- Email Lookup Start -->
+    <div class="dcf-grid dcf-grid-full dcf-grid-halves@md dcf-col-gap-vw dcf-row-gap-5 dcf-mb-8">
+        <ol class="dcf-mb-0">
+            <li>
+                Enter your My.UNL username (your login username) to start.
+                <form class="dcf-form dcf-pt-4 dcf-pb-4 dcf-relative">
+                    <label for="username-to-look-up">Username</label>
+                    <div class="dcf-input-group" style="max-width: 40ch;">
+                        <input id="username-to-look-up" name="person-data" placeholder="hhusker1" type="text">
+                        <button id="start" class="dcf-btn dcf-btn-primary" type="button">Start</button>
                     </div>
-                    <ul id="sortable-field-collection" class="dcf-list-bare"></ul>
-                </fieldset>
-            </form>
-        </div>
-
-        <div class="dcf-1st dcf-2nd@md">
-            <div class="dcf-sticky" style="top: 5rem;">
-                <div class="signature-section dcf-d-flex dcf-jc-center dcf-ai-center dcf-pt-7 dcf-pb-5 dcf-pl-2 dcf-pr-2 dcf-rounded">
-                    <table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;">
-                        <tbody>
-                            <tr>
-                                <td valign="top" style="border:none;border-top:solid #b52929 2px;padding:18px">
-                                    <img src="" alt="" id="sig-logo" style="display: block;">
-                                </td>
-                                <td id="contactInfo" valign="top" style="border:none;padding:15px 18px 18px 0;border-top:solid #D00000 2px;"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="dcf-pt-4 dcf-relative">
+                    <div id="username-error" class="dcf-rounded dcf-p-2 dcf-mt-2" aria-hidden="true" aria-live="polite">
+                        Sorry this username does not exist
+                    </div>
+                </form>
+            </li>
+            <li>
+                Edit your information in the boxes on the right. Make sure
+                <code>mailto:</code> is added before all email addresses and <code>https://</code> is added
+                before all web addresses. Reorder the boxes drag and drop, or use the arrow buttons.
+            </li>
+            <li>
+                Click the “copy your signature” button and your signature will be
+                automatically copied.
+                <div class="dcf-pt-4 dcf-pb-4 dcf-relative">
                     <button class="signature-copy-btn dcf-btn dcf-btn-primary">Copy Your Signature</button>
                     <div class="signature-copy-message dcf-rounded dcf-p-2 dcf-mt-2" aria-hidden="true" aria-live="polite">
                         Your signature has been copied!
                     </div>
                 </div>
+            </li>
+            <li class="dcf-mb-0">
+                Copy and paste the highlighted signature into the signature
+                preferences in your mail client (i.e. Outlook, Mac Mail, etc.).
+                Be mindful that many mail clients will reformat text pasted into
+                them. Make sure your client is set to “Keep Source Formatting.”
+            </li>
+        </ol>
+        <figure class="signature-height-min-content">
+            <img class="dcf-b-1 dcf-b-solid signature-b-light-grey" src="https://ucomm.unl.edu/sites/unl.edu.university-communication/files/media/image/keepSource.jpg" alt="Keep Source Formatting Example Screenshot." />
+            <figcaption>“Keep Source Formatting” example (Outlook for Mac).</figcaption>
+        </figure>
+    </div>
+    <!-- Email Lookup End -->
+
+    <div class="dcf-d-none dcf-mb-8" id="signature-builder">
+        <hr>
+
+        <h2>Signature Details</h2>
+
+        <div class="dcf-grid dcf-grid-full dcf-grid-halves@md dcf-col-gap-vw dcf-row-gap-4 dcf-mb-8">
+            <div class="dcf-2nd dcf-1st@md">
+                <form class="dcf-form">
+                    <div class="dcf-form-group">
+                        <label for="logo-select"> Signature Logo </label>
+                        <select id="logo-select">
+                            <optgroup id="university-logo-options" label='University'></optgroup>
+                            <optgroup id="affiliates-logo-options" label='Affiliates'></optgroup>
+                        </select>
+                    </div>
+                    <fieldset aria-describedby="fields-fieldset-help">
+                        <legend>Fields</legend>
+                        <div class="dcf-d-flex dcf-flex-row dcf-ai-center dcf-gap-4 dcf-mb-5">
+                            <p id="fields-fieldset-help" class="dcf-mb-0">Drag and drop, or use the arrow buttons to reorder.</p>
+                            <button id="new-row" class="dcf-btn dcf-btn-primary dcf-flex-shrink-0" type="button">Append a New Field</button>
+                        </div>
+                        <ul id="sortable-field-collection" class="dcf-list-bare"></ul>
+                    </fieldset>
+                </form>
             </div>
+
+            <div class="dcf-1st dcf-2nd@md">
+                <div class="dcf-sticky" style="top: 5rem;">
+                    <div class="signature-section dcf-d-flex dcf-jc-center dcf-ai-center dcf-pt-7 dcf-pb-5 dcf-pl-2 dcf-pr-2 dcf-rounded">
+                        <table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;width:auto;background-color:transparent;text-align:left;margin:0;">
+                            <tbody>
+                                <tr>
+                                    <td valign="top" style="border:none;border-top:solid #b52929 2px;padding:18px">
+                                        <img src="" alt="" id="sig-logo" style="display: block;">
+                                    </td>
+                                    <td id="contactInfo" valign="top" style="border:none;padding:15px 18px 18px 0;border-top:solid #D00000 2px;"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="dcf-pt-4 dcf-relative">
+                        <button class="signature-copy-btn dcf-btn dcf-btn-primary">Copy Your Signature</button>
+                        <div class="signature-copy-message dcf-rounded dcf-p-2 dcf-mt-2" aria-hidden="true" aria-live="polite">
+                            Your signature has been copied!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="dcf-bleed dcf-wrapper dcf-d-flex dcf-jc-center dcf-pt-7 dcf-pb-7 signature-bg-light-grey">
+        <div class="dcf-w-max-lg dcf-txt-center">
+            <p class="dcf-mb-0">
+                <small class="dcf-txt-sm">This application is developed and maintained
+                    by <a href="https://ucomm.unl.edu/dxg">Digital Experience Group</a>.
+                    Please submit issues to <a href="mailto:support@nebraska.edu">support@nebraska.edu</a>
+                </small>
+            </p>
         </div>
     </div>
 
-</div>
-<div class="dcf-bleed dcf-wrapper dcf-d-flex dcf-jc-center dcf-pt-7 dcf-pb-7 signature-bg-light-grey">
-    <div class="dcf-w-max-lg dcf-txt-center">
-        <p class="dcf-mb-0">
-            <small class="dcf-txt-sm">This application is developed and maintained
-                by <a href="https://ucomm.unl.edu/dxg">Digital Experience Group</a>.
-                Please submit issues to <a href="mailto:support@nebraska.edu">support@nebraska.edu</a>
-            </small>
-        </p>
-    </div>
-</div>
-
-<template id="sortable-field-template">
-    <li class="sortable-field dcf-p-2 dcf-rounded" draggable="true">
-        <div>
-            <div class="dcf-form-group">
-                <label class="label-text-value">Field Text</label>
-                <input class="field-text-value" type="text">
+    <template id="sortable-field-template">
+        <li class="sortable-field dcf-p-2 dcf-rounded" draggable="true">
+            <div>
+                <div class="dcf-form-group">
+                    <label class="label-text-value">Field Text</label>
+                    <input class="field-text-value" type="text">
+                </div>
+                <div class="dcf-form-group dcf-mb-0">
+                    <label class="label-text-url">Field URL</label>
+                    <input class="field-text-url" type="text">
+                </div>
             </div>
-            <div class="dcf-form-group dcf-mb-0">
-                <label class="label-text-url">Field URL</label>
-                <input class="field-text-url" type="text">
-            </div>
-        </div>
-        <div class="dcf-d-flex dcf-flex-col dcf-jc-between">
-            <button class="delete-field-btn dcf-btn dcf-btn-secondary dcf-p-2" aria-label="Delete Field" type="button">
-                <svg xmlns="http://www.w3.org/2000/svg" class="dcf-fill-current dcf-w-4 dcf-h-4 dcf-d-block" viewBox="0 0 25 25" >
-                    <path d="M24.6,22.4l-9.9-9.9l9.9-9.9C24.8,2.3,25,1.9,25,1.5s-0.2-0.8-0.4-1.1c-0.6-0.6-1.6-0.6-2.1,0l-9.9,9.9L2.6,0.4
-                        C2-0.1,1-0.1,0.4,0.4C-0.1,1-0.1,2,0.4,2.6l9.9,9.9l-9.9,9.9C0.2,22.7,0,23.1,0,23.5s0.2,0.8,0.4,1.1C0.7,24.9,1.1,25,1.5,25
-                        c0.4,0,0.8-0.1,1.1-0.4l9.9-9.9l9.9,9.9c0.3,0.3,0.7,0.4,1.1,0.4c0,0,0,0,0,0c0.4,0,0.8-0.2,1.1-0.4c0.3-0.3,0.4-0.7,0.4-1.1
-                        C25,23.1,24.8,22.7,24.6,22.4z"/>
-                </svg>
-            </button>
-            <div class="dcf-d-flex dcf-flex-col dcf-row-gap-3">
-                <button class="up-field-btn dcf-btn dcf-btn-secondary dcf-p-2" aria-label="Move Field Up" type="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="dcf-fill-current dcf-w-4 dcf-h-4 dcf-d-block" viewBox="0 0 25 26">
-                        <path d="M24.6,13L13.7,0.6l-0.1-0.2l-0.1,0c-0.5-0.4-1.4-0.4-1.9,0
-                            L0.4,13C0.1,13.3,0,13.7,0,14.1c0,0.4,0.2,0.8,0.5,1
-                            c0.6,0.5,1.6,0.5,2.1-0.1L11,5.5v19c0,0.8,0.7,1.5,1.5,1.5
-                            s1.5-0.7,1.5-1.5v-19l8.4,9.5c0.5,0.6,1.5,0.7,2.1,0.1
-                            c0.3-0.3,0.5-0.6,0.5-1C25,13.7,24.9,13.3,24.6,13z"/>
+            <div class="dcf-d-flex dcf-flex-col dcf-jc-between">
+                <button class="delete-field-btn dcf-btn dcf-btn-secondary dcf-p-2" aria-label="Delete Field" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="dcf-fill-current dcf-w-4 dcf-h-4 dcf-d-block" viewBox="0 0 25 25" >
+                        <path d="M24.6,22.4l-9.9-9.9l9.9-9.9C24.8,2.3,25,1.9,25,1.5s-0.2-0.8-0.4-1.1c-0.6-0.6-1.6-0.6-2.1,0l-9.9,9.9L2.6,0.4
+                            C2-0.1,1-0.1,0.4,0.4C-0.1,1-0.1,2,0.4,2.6l9.9,9.9l-9.9,9.9C0.2,22.7,0,23.1,0,23.5s0.2,0.8,0.4,1.1C0.7,24.9,1.1,25,1.5,25
+                            c0.4,0,0.8-0.1,1.1-0.4l9.9-9.9l9.9,9.9c0.3,0.3,0.7,0.4,1.1,0.4c0,0,0,0,0,0c0.4,0,0.8-0.2,1.1-0.4c0.3-0.3,0.4-0.7,0.4-1.1
+                            C25,23.1,24.8,22.7,24.6,22.4z"/>
                     </svg>
                 </button>
-                <button class="down-field-btn dcf-btn dcf-btn-secondary dcf-p-2" aria-label="Move Field Down" type="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="dcf-fill-current dcf-w-4 dcf-h-4 dcf-d-block" viewBox="0 0 24 24">
+                <div class="dcf-d-flex dcf-flex-col dcf-row-gap-3">
+                    <button class="up-field-btn dcf-btn dcf-btn-secondary dcf-p-2" aria-label="Move Field Up" type="button">
                         <svg xmlns="http://www.w3.org/2000/svg" class="dcf-fill-current dcf-w-4 dcf-h-4 dcf-d-block" viewBox="0 0 25 26">
-                            <path d="M24.5,10.9c-0.3-0.3-0.7-0.4-1.1-0.4c-0.4,0-0.8,0.2-1,0.5
-                                L14,20.5v-19C14,0.7,13.3,0,12.5,0S11,0.7,11,1.5v19L2.6,11
-                                c-0.3-0.3-0.6-0.5-1-0.5c-0.4,0-0.8,0.1-1.1,0.4c-0.3,0.3-0.5,0.6-0.5,1
-                                c0,0.4,0.1,0.8,0.4,1.1l11,12.4l0.1,0.2l0.1,0.1
-                                c0,0,0.1,0.1,0.2,0.1l0.2,0.1c0.2,0.1,0.4,0.1,0.6,0.1
-                                c0.2,0,0.4,0,0.6-0.1l0.2-0.1c0.1,0,0.1-0.1,0.2-0.1L24.6,13
-                                c0.3-0.3,0.4-0.7,0.4-1.1C25,11.5,24.8,11.1,24.5,10.9z"/>
+                            <path d="M24.6,13L13.7,0.6l-0.1-0.2l-0.1,0c-0.5-0.4-1.4-0.4-1.9,0
+                                L0.4,13C0.1,13.3,0,13.7,0,14.1c0,0.4,0.2,0.8,0.5,1
+                                c0.6,0.5,1.6,0.5,2.1-0.1L11,5.5v19c0,0.8,0.7,1.5,1.5,1.5
+                                s1.5-0.7,1.5-1.5v-19l8.4,9.5c0.5,0.6,1.5,0.7,2.1,0.1
+                                c0.3-0.3,0.5-0.6,0.5-1C25,13.7,24.9,13.3,24.6,13z"/>
                         </svg>
-                </button>
+                    </button>
+                    <button class="down-field-btn dcf-btn dcf-btn-secondary dcf-p-2" aria-label="Move Field Down" type="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="dcf-fill-current dcf-w-4 dcf-h-4 dcf-d-block" viewBox="0 0 24 24">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="dcf-fill-current dcf-w-4 dcf-h-4 dcf-d-block" viewBox="0 0 25 26">
+                                <path d="M24.5,10.9c-0.3-0.3-0.7-0.4-1.1-0.4c-0.4,0-0.8,0.2-1,0.5
+                                    L14,20.5v-19C14,0.7,13.3,0,12.5,0S11,0.7,11,1.5v19L2.6,11
+                                    c-0.3-0.3-0.6-0.5-1-0.5c-0.4,0-0.8,0.1-1.1,0.4c-0.3,0.3-0.5,0.6-0.5,1
+                                    c0,0.4,0.1,0.8,0.4,1.1l11,12.4l0.1,0.2l0.1,0.1
+                                    c0,0,0.1,0.1,0.2,0.1l0.2,0.1c0.2,0.1,0.4,0.1,0.6,0.1
+                                    c0.2,0,0.4,0,0.6-0.1l0.2-0.1c0.1,0,0.1-0.1,0.2-0.1L24.6,13
+                                    c0.3-0.3,0.4-0.7,0.4-1.1C25,11.5,24.8,11.1,24.5,10.9z"/>
+                            </svg>
+                    </button>
+                </div>
             </div>
-        </div>
-    </li>
-</template>
+        </li>
+    </template>
 
-<template id="signature-primary-field-template">
-    <p style="margin:0px 2px 2px 2px;font-family: Helvetica, Arial;color: #454545;font-size:16px;line-height: 18px;"></p>
-</template>
+    <template id="signature-primary-field-template">
+        <p style="margin:0px 2px 2px 2px;font-family: Helvetica, Arial;color: #454545;font-size:16px;line-height: 18px;"></p>
+    </template>
 
-<template id="signature-secondary-field-template">
-    <p style="font-size:12px;margin:2px;font-style:italic;font-family: Georgia;color: #454545;line-height: 14px;"></p>
-</template>
+    <template id="signature-secondary-field-template">
+        <p style="font-size:12px;margin:2px;font-style:italic;font-family: Georgia;color: #454545;line-height: 14px;"></p>
+    </template>
 
-<template id="signature-field-template">
-    <p style="font-size:10px;margin:2px;font-family: Helvetica, Arial;color: #454545;line-height: 14px;"></p>
-</template>
+    <template id="signature-field-template">
+        <p style="font-size:10px;margin:2px;font-family: Helvetica, Arial;color: #454545;line-height: 14px;"></p>
+    </template>
+</div>
 
 <script type="text/javascript" defer>
     // CONFIG FOR SIGNATURE GENERATOR
@@ -312,49 +318,49 @@
                 name: 'N-(UNL Icon)',
                 alt: 'University of Nebraska &ndash; Lincoln',
                 color: '#D00000',
-                logo: 'https://ucomm.unl.edu/images/email-signature/Nebraska_N_RGB_small_on_white.gif',
+                logo: 'https://ucomm.unl.edu/sites/unl.edu.university-communication/files/media/image/Nebraska_N_RGB_small_on_white.gif',
                 optgroup: 'university'
             },
             {
                 name: 'N-Grit/Glory',
                 alt: 'In Our GRIT Our GLORY',
                 color: '#D00000',
-                logo: 'https://ucomm.unl.edu/images/email-signature/Nebrasla_N_GritGlory_Stacked_RGB.gif',
+                logo: 'https://ucomm.unl.edu/sites/unl.edu.university-communication/files/media/image/Nebrasla_N_GritGlory_Stacked_RGB.gif',
                 optgroup: 'university'
             },
             {
                 name: 'N-Museum',
                 alt: 'University of Nebraska State Museum',
                 color: '#2b5135',
-                logo: 'https://ucomm.unl.edu/images/email-signature/unsm.gif',
+                logo: 'https://ucomm.unl.edu/sites/unl.edu.university-communication/files/media/image/unsm.gif',
                 optgroup: 'affiliates'
             },
             {
                 name: 'NFS',
                 alt: 'Nebraska Forest Service',
                 color: '#D00000',
-                logo: 'https://ucomm.unl.edu/images/email-signature/nfs.gif',
+                logo: 'https://ucomm.unl.edu/sites/unl.edu.university-communication/files/media/image/nfs.gif',
                 optgroup: 'affiliates'
             },
             {
                 name: '4H',
                 alt: '4H',
                 color: '#D00000',
-                logo: 'https://ucomm.unl.edu/images/email-signature/4h.gif',
+                logo: 'https://ucomm.unl.edu/sites/unl.edu.university-communication/files/media/image/4h.gif',
                 optgroup: 'affiliates'
             },
             {
                 name: 'Alumni Association',
                 alt: 'Alumni Association',
                 color: '#D00000',
-                logo: 'https://ucomm.unl.edu/images/email-signature/Alumni_Association.png',
+                logo: 'https://ucomm.unl.edu/sites/unl.edu.university-communication/files/media/image/Alumni_Association.png',
                 optgroup: 'affiliates'
             },
             {
                 name: 'Alumni Association 150 Years',
                 alt: 'Alumni Association 150 Years',
                 color: '#D00000',
-                logo: 'https://ucomm.unl.edu/images/email-signature/NAA_150Years_RGB_4.png',
+                logo: 'https://ucomm.unl.edu/sites/unl.edu.university-communication/files/media/image/NAA_150Years_RGB_4.png',
                 optgroup: 'affiliates'
             },
         ],
